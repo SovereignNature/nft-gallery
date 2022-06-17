@@ -624,7 +624,10 @@
     "newestListDesc": "Discover the latest items on sale",
     "newestListHeading": "Newest List",
     "popularCollectionsHeading": "Popular Collections",
-    "popularCollectionsDesc": "Discover the most popular collections on rmrk"
+    "popularCollectionsDesc": "Discover the most popular collections on rmrk",
+    "bioCompendium": "Bio-Compendium",
+    "nftGalleryPlanting": "An NFT Gallery Planting Value In Nature",
+    "bioCompendiumText": "Sales of NFTs found in these collections directly benefit the artists and developers behind them along with designated high-impact ecological organisations and a central treasury for nature’s value. Learn more about the people and companies behind these initiatives in the description field for each item. Explore and entangle with the more-than-human world!"
   },
   "helper": {
     "seeMore": "See More",

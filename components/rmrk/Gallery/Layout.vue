@@ -56,7 +56,7 @@ export default class Layout extends Vue {
 @import '@/styles/variables';
 
 .b-radio.radio.button.is-selected {
-  background-color: #db2980;
+  background-color: $primary;
 }
 .collection-radio-btn .b-radio.radio.button {
   border: none !important;

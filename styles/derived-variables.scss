@@ -1,9 +1,9 @@
 @import "initial-variables";
 
-$primary: #e6007e;
+$primary: #98DF5B;
 // $primary: #ff149366;
-$primary-light: #d32e79;
-$primary-dark-transparent: rgba(90, 15, 60, 0.7);
+$primary-light: #aae6b9;
+$primary-dark-transparent: rgba(5, 116, 83, 0.7);
 
 // $info: $cyan;
 $success: $green;
@@ -91,8 +91,8 @@ $link-hover: $primary;
 
 // // Typography
 
-$family-primary: $family-monospace;
-// $family-secondary: $family-sans-serif;
+$family-primary: $family-playfair-display;
+$family-secondary: $family-jost;
 // $family-code: $family-monospace;
 
 // $size-small: $size-7;

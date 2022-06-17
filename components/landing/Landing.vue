@@ -3,21 +3,16 @@
     <div class="container">
       <div class="columns">
         <div class="column">
-          <picture>
-            <source srcset="~/assets/KODADOT.webp" type="image/webp" />
-            <source srcset="~/assets/KODADOT.png" type="image/png" />
-            <img
-              src="~/assets/KODADOT.png"
-              alt="First NFT market explorer on Kusama and Polkadot"
-              class="mb-5 is-hidden-mobile"
-              width="950"
-              height="165"
-              loading="lazy" />
-          </picture>
           <h3
             class="title is-1 is-size-3-mobile is-flex is-flex-direction-column uppercase homepage__heading">
             <span class="text__stroked my-5">
-              {{ $t('general.ksmDiscoverText') }}
+              {{ $t('general.bioCompendium') }}
+            </span>
+            <span class="title is-6 homepage__subtitle uppercase text-semibold">
+              {{ $t('general.nftGalleryPlanting') }}
+            </span>
+            <span class="title is-6 homepage__subtitle uppercase text-semibold">
+              {{ $t('general.bioCompendiumText') }}
             </span>
             <span class="title is-6 homepage__subtitle uppercase text-semibold">
               {{ $t('helper.builtOn') }}

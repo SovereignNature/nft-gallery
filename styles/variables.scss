@@ -99,7 +99,7 @@ $box-shadow: none;
 // tabs
 $tabs-link-hover-color: $primary;
 $tabs-boxed-link-focus-border-bottom-color: $primary;
-$tabs-boxed-link-focus-background-color: lightpink;
+$tabs-boxed-link-focus-background-color: $primary-light;
 // $tabs-boxed-link-focus-active-background-color: $primary;
 
 //  these somehow doesn't work for profile, idk why, maybe fix whenever you spot this
@@ -123,9 +123,9 @@ $pagination-border-color: $primary;
 $pagination-hover-border-color: $primary;
 $pagination-focus-border-color: $primary;
 $pagination-current-background-color: $primary;
-$pagination-disabled-color: pink;
-$pagination-disabled-background-color: mediumvioletred;
-$pagination-disabled-border-color: mediumvioletred;
+$pagination-disabled-color: $light-text;
+$pagination-disabled-background-color: #215524;
+$pagination-disabled-border-color: #215524;
 $pagination-color: $light-text;
 $pagination-active-color: $light-text;
 
@@ -137,7 +137,7 @@ $table-color: $text;
 $image-placeholder-blur-enabled: false;
 
 // custom colors
-$lightpink: lightpink;
+$lightpink: $primary-light;
 
 $blacklight: #0909098c;
 

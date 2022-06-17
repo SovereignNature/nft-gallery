@@ -10,7 +10,7 @@
     <template #brand>
       <b-navbar-item tag="nuxt-link" :to="{ path: '/' }" class="logo">
         <img
-          src="~/assets/Koda_Beta.svg"
+          src="~/assets/SNI-logo.svg"
           alt="First NFT market explorer on Kusama and Polkadot"
           width="130"
           height="35" />

@@ -58,6 +58,6 @@ export default class GalleryCardList extends Vue {
 <style>
 /* TODO: move to global */
 .b-radio.radio.button.is-selected {
-  background-color: #db2980;
+  background-color: $primary;
 }
 </style>

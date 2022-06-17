@@ -1,3 +1,8 @@
+::selection {
+  background: $primary-dark-transparent;
+  color: #f6f6f6;
+}
+
 html,
 body,
 div#__nuxt,
@@ -44,6 +49,9 @@ body {
     select {
       option {
         color: $scheme-invert;
+        &:hover {
+          background: $primary;
+        }
       }
     }
   }
