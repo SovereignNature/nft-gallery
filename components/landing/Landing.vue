@@ -8,13 +8,13 @@
             <span class="text__stroked my-5">
               {{ $t('general.bioCompendium') }}
             </span>
-            <span class="title is-6 homepage__subtitle uppercase text-semibold">
+            <span class="homepage__subtitle">
               {{ $t('general.nftGalleryPlanting') }}
             </span>
-            <span class="title is-6 homepage__subtitle uppercase text-semibold">
+            <span class="homepage__subtitle text">
               {{ $t('general.bioCompendiumText') }}
             </span>
-            <span class="title is-6 homepage__subtitle uppercase text-semibold">
+            <span class="homepage__subtitle text">
               {{ $t('helper.builtOn') }}
               <span class="text-bold text-primary"> {{ buildOn }} </span>
             </span>
@@ -107,9 +107,21 @@ export default class Landing extends mixins(AuthMixin) {
     font-size: 4rem;
     color: $text;
   }
+
+  &__subtitle {
+    line-height: 1.75rem;
+    font-size: 2rem;
+    text-transform: none;
+    &.text {
+      padding-top: 1.5rem;
+      padding-bottom: 1.5rem;
+      font-size: 1.25rem;
+    }
+  }
 }
 .title {
   word-break: normal;
+  font-family: $family-playfair-display;
 }
 .subtitle {
   text-decoration: underline;

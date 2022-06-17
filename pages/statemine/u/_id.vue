@@ -250,7 +250,7 @@ export default class Profile extends mixins(PrefixMixin) {
 
   get defaultNFTImage(): string {
     const url = new URL(window.location.href)
-    return `${url.protocol}/${url.hostname}/placeholder.webp`
+    return `${url.protocol}/${url.hostname}/placeholder.png`
   }
 
   protected async fetchProfile() {

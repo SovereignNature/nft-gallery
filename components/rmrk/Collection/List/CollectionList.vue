@@ -118,7 +118,7 @@ export default class CollectionList extends mixins(
 ) {
   private collections: Collection[] = []
   private meta: Metadata[] = []
-  private placeholder = '/placeholder.webp'
+  private placeholder = '/placeholder.png'
   private isLoading = true
   private searchQuery: SearchQuery = Object.assign(
     {

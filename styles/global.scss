@@ -10,9 +10,11 @@ div#__layout {
   height: 100%;
   margin: 0;
   width: 100%;
+  font-family: $family-jost;
 }
 
 body {
+  font-family: $family-jost;
   .button {
     text-transform: uppercase;
     border-radius: 0;
@@ -127,8 +129,8 @@ body {
   }
 
   .modal-content {
-    border: 2px solid #d32e79;
-    box-shadow: 13px 14px rgba(90, 15, 60, 0.7);
+    border: 2px solid $primary-light;
+    box-shadow: 13px 14px $primary-dark-transparent;
   }
 
   a {
@@ -169,6 +171,7 @@ body {
 
   .title,
   .card-header-title {
+    font-family: $family-playfair-display;
     color: $text !important;
   }
 

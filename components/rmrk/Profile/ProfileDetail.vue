@@ -562,7 +562,7 @@ export default class Profile extends mixins(
 
   get defaultNFTImage(): string {
     const url = new URL(window.location.href)
-    return `${url.protocol}//${url.hostname}/placeholder.webp`
+    return `${url.protocol}//${url.hostname}/placeholder.png`
   }
 
   set currentValue(page: number) {

@@ -32,7 +32,7 @@ export default class QRCodeComponent extends Vue {
       text: this.text,
       width: this.size,
       height: this.size,
-      colorDark: this.color,
+      colorDark: '#98DF5B',
       colorLight: this.bgColor,
       correctLevel: QRCode.CorrectLevel[this.errorLevel],
     })

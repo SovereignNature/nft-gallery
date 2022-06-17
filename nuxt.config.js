@@ -93,14 +93,14 @@ export default defineNuxtConfig({
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Fira+Code:wght@600;700&display=swap',
+        href: 'https://fonts.googleapis.com/css2?family=Fira+Code:wght@600;700family=Jost:wght@300;400;600&family=Playfair+Display:wght@400;500;700&display=swap',
       },
     ],
   },
 
   loadingIndicator: {
     name: 'folding-cube',
-    color: '#fc007b',
+    color: '#98DF5B',
     background: 'black',
   },
 

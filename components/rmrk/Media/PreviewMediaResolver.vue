@@ -36,7 +36,7 @@ export default class PreviewMediaResolver extends Vue {
   }
 
   get properSrc() {
-    return this.src || '/placeholder.webp'
+    return this.src || '/placeholder.png'
   }
 
   protected async fetchMimeType() {

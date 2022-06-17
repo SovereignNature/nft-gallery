@@ -80,7 +80,7 @@ export default class GalleryCard extends mixins(AuthMixin) {
   protected title = ''
   protected animatedUrl = ''
 
-  protected placeholder = '/placeholder.webp'
+  protected placeholder = '/placeholder.png'
 
   async fetch() {
     if (this.metadata) {

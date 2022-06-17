@@ -3,7 +3,7 @@
     :is="resolveComponent"
     v-if="src"
     :src="src"
-    :poster="poster || '/placeholder.webp'"
+    :poster="poster || '/placeholder.png'"
     :description="description"
     :preview="preview"
     :availableAnimations="availableAnimations" />

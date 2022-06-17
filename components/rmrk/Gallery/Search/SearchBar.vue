@@ -63,7 +63,7 @@
                 <div class="media-left">
                   <BasicImage
                     customClass="is-32x32"
-                    :src="props.option.image || '/placeholder.webp'" />
+                    :src="props.option.image || '/placeholder.png'" />
                   <!-- <div class="preview-media-wrapper">
                   <PreviewMediaResolver
                     v-if="!props.option.image && props.option.animation_url"
