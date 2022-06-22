@@ -1,10 +1,9 @@
 ::selection {
   background: $primary-dark-transparent;
-  color: #f6f6f6;
 }
 
 html,
-body,
+body,pa
 div#__nuxt,
 div#__layout {
   height: 100%;
@@ -171,7 +170,7 @@ body {
 
   .title,
   .card-header-title {
-    font-family: $family-playfair-display;
+    font-family: $family-jost;
     color: $text !important;
   }
 

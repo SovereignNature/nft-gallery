@@ -121,7 +121,7 @@ export default class Landing extends mixins(AuthMixin) {
 }
 .title {
   word-break: normal;
-  font-family: $family-playfair-display;
+  font-family: $family-jost;
 }
 .subtitle {
   text-decoration: underline;
