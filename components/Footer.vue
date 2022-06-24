@@ -7,7 +7,7 @@
         <ul class="footer__list icons__list">
           <li class="icons__list-item">
             <a
-              href="https://discord.gg/u6ymnbz4PR"
+              href="https://discord.gg/HAbatmqM"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Discord">
@@ -16,7 +16,7 @@
           </li>
           <li class="icons__list-item">
             <a
-              href="https://twitter.com/KodaDot"
+              href="https://twitter.com/sovereignnature"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Twitter">
@@ -25,7 +25,7 @@
           </li>
           <li class="icons__list-item">
             <a
-              href="https://instagram.com/kodadot.xyz"
+              href="https://www.instagram.com/sovnature"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram">
@@ -34,7 +34,7 @@
           </li>
           <li class="icons__list-item">
             <a
-              href="https://www.youtube.com/channel/UCEULduld5NrqOL49k1KVjoA/"
+              href="https://www.youtube.com/channel/UCFygPGZnXpUKjR3xgBVBJcA"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Youtube">
@@ -43,11 +43,11 @@
           </li>
           <li class="icons__list-item">
             <a
-              href="https://medium.com/kodadot"
+              href="https://www.linkedin.com/company/sovereign-nature-initiative/"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Medium">
-              <b-icon pack="fab" icon="medium" size="is-medium" />
+              aria-label="Linked In">
+              <b-icon pack="fab" icon="linkedin" size="is-medium" />
             </a>
           </li>
         </ul>
@@ -91,36 +91,9 @@ export default class Footer extends Vue {
       url: '/rmrk/faq',
     },
     {
-      name: this.$t('grants'),
-      url: 'https://form.kodadot.xyz/grant',
-      external: true,
-    },
-    {
       name: this.$t('documentation'),
       url: 'https://docs.kodadot.xyz/',
       external: true,
-    },
-    {
-      name: this.$t('contribute'),
-      url: '/contribute',
-    },
-    {
-      name: this.$t('careers'),
-      url: '/jobs',
-    },
-    {
-      name: this.$t('ambassador program'),
-      url: 'https://docs.kodadot.xyz/ambassador-program/ambassador-intro.html#the-opportunity',
-      external: true,
-    },
-    {
-      name: this.$t('press kit'),
-      url: 'https://github.com/kodadot/kodadot-presskit/tree/main/v3',
-      external: true,
-    },
-    {
-      name: this.$t('qrCode'),
-      url: '/qrCode',
     },
   ]
 }

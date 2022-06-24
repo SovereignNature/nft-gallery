@@ -4,8 +4,8 @@
       <div class="columns">
         <div class="column">
           <h3
-            class="title is-1 is-size-3-mobile is-flex is-flex-direction-column uppercase homepage__heading">
-            <span class="text__stroked my-5">
+            class="is-1 is-size-3-mobile is-flex is-flex-direction-column uppercase homepage__heading">
+            <span class="homepage__title my-5">
               {{ $t('general.bioCompendium') }}
             </span>
             <span class="homepage__subtitle">
@@ -14,31 +14,11 @@
             <span class="homepage__subtitle text">
               {{ $t('general.bioCompendiumText') }}
             </span>
-            <span class="homepage__subtitle text">
-              {{ $t('helper.builtOn') }}
-              <span class="text-bold text-primary"> {{ buildOn }} </span>
-            </span>
           </h3>
-          <a
-            href="https://discord.gg/35hzy2dXXh"
-            target="_blank"
-            rel="noopener noreferrer">
-            <img
-              src="https://badgen.net/discord/online-members/35hzy2dXXh"
-              alt="Discord"
-              width="354"
-              height="40"
-              style="width: 177px" />
-          </a>
-        </div>
-        <div class="column">
-          <LazyGalleryCuratedList v-if="prefix === 'rmrk'" />
         </div>
       </div>
       <div v-if="prefix === 'rmrk'">
         <LazyGalleryLatestSales :passionList="passionList" class="my-5" />
-        <LazyGalleryPopularCollections class="my-5" />
-        <LazyGalleryNewestList :passionList="passionList" class="my-5" />
       </div>
     </div>
   </section>
@@ -96,11 +76,9 @@ export default class Landing extends mixins(AuthMixin) {
   color: $text;
 
   &__title {
-    display: inline-flex;
-    padding: 16px 32px;
-    margin: 0 0 60px;
     text-transform: uppercase;
-    border: 4px solid $primary;
+    font-weight: 600;
+    color: $primary;
   }
 
   &__heading {
