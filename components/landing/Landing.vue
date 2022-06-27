@@ -2,7 +2,7 @@
   <section class="homepage section">
     <div class="container">
       <div class="columns">
-        <div class="column">
+        <div class="column is-three-fifths">
           <h3
             class="is-1 is-size-3-mobile is-flex is-flex-direction-column uppercase homepage__heading">
             <span class="homepage__title my-5">

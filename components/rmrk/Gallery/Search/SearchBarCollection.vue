@@ -195,10 +195,6 @@ export default class CollectionSearchBar extends mixins(KeyboardEventsMixin) {
 <style scoped lang="scss">
 @import '@/styles/variables';
 
-.card {
-  box-shadow: 0px 0px 5px 0.5px $primary;
-}
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;

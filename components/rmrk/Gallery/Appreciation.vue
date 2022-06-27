@@ -149,7 +149,6 @@ export default class Appreciation extends mixins(
 .nft-appreciation__button {
   border-radius: 0;
   border: 0;
-  border-top: $sleek-primary-border !important;
   color: $primary;
   margin-right: 15px;
 }

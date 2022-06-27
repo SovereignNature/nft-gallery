@@ -232,8 +232,4 @@ export default class IdentityPopover extends mixins(
 .break-word {
   overflow-wrap: break-word;
 }
-
-.ms-dos-shadow {
-  box-shadow: $dropdown-content-shadow;
-}
 </style>

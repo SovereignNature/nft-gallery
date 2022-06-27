@@ -35,7 +35,7 @@
 
           <b-button
             @click="toggleSearchBarDisplay"
-            type="is-primary is-bordered-light"
+            type="is-primary"
             class="navbar-link-background"
             icon-right="search" />
         </div>
@@ -104,8 +104,6 @@
           <b-navbar-item tag="nuxt-link" to="/hot"> Hot </b-navbar-item>
         </template>
       </b-navbar-dropdown>
-      <LazyChainSelect class="custom-navbar-item" id="NavChainSelect" />
-      <LazySwitchLocale class="custom-navbar-item" id="NavLocaleChanger" />
       <NavbarProfileDropdown :isRmrk="isRmrk" id="NavProfile" />
     </template>
     <template #end v-else>
@@ -379,7 +377,6 @@ export default class NavbarMenu extends mixins(PrefixMixin) {
 
   .navbar-dropdown {
     border: 2px solid $primary-light !important;
-    box-shadow: $dropdown-content-shadow !important;
     .navbar-item {
       border: none !important;
       margin-left: 0 !important;
@@ -400,7 +397,6 @@ export default class NavbarMenu extends mixins(PrefixMixin) {
       }
       &:focus {
         box-shadow: none !important;
-        border-top: $sleek-primary-border;
       }
     }
   }
@@ -415,7 +411,6 @@ export default class NavbarMenu extends mixins(PrefixMixin) {
       z-index: 1;
       &:focus {
         box-shadow: none !important;
-        border-top: 2px solid $primary;
         background: rgba(41, 41, 47);
       }
     }

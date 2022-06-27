@@ -40,8 +40,4 @@ export default class BasicPopup extends Vue {
 .break-word {
   overflow-wrap: break-word;
 }
-
-.ms-dos-shadow {
-  box-shadow: $dropdown-content-shadow;
-}
 </style>

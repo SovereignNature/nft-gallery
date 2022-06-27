@@ -26,7 +26,6 @@
 .snackbar {
   border: 2px solid $primary;
   background-color: #202225;
-  box-shadow: $dropdown-content-shadow;
 }
 
 .slide-enter-active,

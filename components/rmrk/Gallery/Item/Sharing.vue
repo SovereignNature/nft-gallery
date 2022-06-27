@@ -182,7 +182,6 @@ export default class Sharing extends Vue {
   &__tooltip {
     .tooltip-content {
       border: 2px solid $primary-light !important;
-      box-shadow: $dropdown-content-shadow !important;
       background: $black !important;
     }
 

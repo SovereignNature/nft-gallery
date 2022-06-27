@@ -9,14 +9,6 @@
           {{ $t('general.latestSalesheading') }}
         </p>
       </div>
-      <div class="column has-text-right">
-        <Pagination
-          simple
-          preserveScroll
-          v-model="currentValue"
-          :total="total"
-          :perPage="1" />
-      </div>
     </div>
 
     <CarouselCardList :nfts="nfts" :page="currentValue" />

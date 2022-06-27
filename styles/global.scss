@@ -22,9 +22,9 @@ body {
     color: $scheme-invert;
 
     &.is-primary {
-      border-color: $primary;
       background-color: $scheme-main;
       color: $light-text;
+      border: none !important;
       &:hover,
       &:focus {
         border-color: $primary;
@@ -129,7 +129,7 @@ body {
 
   .modal-content {
     border: 2px solid $primary-light;
-    box-shadow: 13px 14px $primary-dark-transparent;
+    box-shadow: none;
   }
 
   a {
@@ -218,7 +218,6 @@ button.button.is-bordered {
 
 button.button.is-bordered-light {
   border: 0;
-  border-top: 1px solid $primary !important;
 }
 
 .share-button {
@@ -232,7 +231,6 @@ button.button.navbar-link-background {
 .card.bordered {
   border-radius: 0 !important;
   box-shadow: none;
-  border-top: $sleek-primary-border;
 
   &-content {
     padding-left: 1rem;
@@ -293,6 +291,5 @@ button.button.navbar-link-background {
 
 // global css for pagination
 .pagination-link {
-  border: none!important;
-  border-top: 1px solid $primary!important;
+  border: none !important;
 }

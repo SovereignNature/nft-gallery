@@ -3,9 +3,7 @@
     <template #trigger>
       <span v-if="account" class="is-mobile is-vcentered navbar__avatar">
         <!-- <Avatar class="navbar__avatar-icon" :value="account" :size="34" /> -->
-        <b-button
-          type="is-primary navbar-link-background is-bordered-light"
-          class="navbar__button">
+        <b-button type="is-primary navbar-link-background is-bordered-light">
           <Identity
             :address="account"
             class="navbar__address"
@@ -130,7 +128,6 @@ export default class NavbarProfileDropdown extends mixins(PrefixMixin) {
 
   &__button {
     border: 0;
-    border-top: 2px solid $primary !important;
   }
 
   &__avatar {
@@ -150,10 +147,7 @@ export default class NavbarProfileDropdown extends mixins(PrefixMixin) {
     text-transform: none;
   }
   &__sign-out-button {
-    border-top: $sleek-primary-border !important;
-    border-bottom: 0;
-    border-right: 0;
-    border-left: 0;
+    border: none;
   }
 }
 </style>

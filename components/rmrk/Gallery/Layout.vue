@@ -60,6 +60,5 @@ export default class Layout extends Vue {
 }
 .collection-radio-btn .b-radio.radio.button {
   border: none !important;
-  border-top: 1px solid $primary !important;
 }
 </style>
