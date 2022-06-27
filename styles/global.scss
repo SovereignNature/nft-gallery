@@ -6,10 +6,17 @@ html,
 body,pa
 div#__nuxt,
 div#__layout {
+  background: url('../assets/sni-background.png');
+  background-position: center;
+  background-size: cover;
   height: 100%;
   margin: 0;
   width: 100%;
   font-family: $family-jost;
+
+  .navbar {
+    background: transparent;
+  }
 }
 
 body {
@@ -21,10 +28,12 @@ body {
     transition: all 0.3s;
     color: $scheme-invert;
 
+
+
     &.is-primary {
       background-color: $scheme-main;
       color: $light-text;
-      border: none !important;
+      
       &:hover,
       &:focus {
         border-color: $primary;
@@ -212,8 +221,7 @@ body {
 }
 
 button.button.is-bordered {
-  border: 0;
-  border-top: 2px solid $primary !important;
+  border: 2px solid $primary !important;
 }
 
 button.button.is-bordered-light {
@@ -277,6 +285,15 @@ button.button.navbar-link-background {
       > .dropdown-content {
         max-height: 500px !important;
       }
+    }
+  }
+}
+
+.carousel-list {
+  .carousel-slides {
+    justify-content: center;
+    .carousel-slide {
+      width: 304px !important;
     }
   }
 }

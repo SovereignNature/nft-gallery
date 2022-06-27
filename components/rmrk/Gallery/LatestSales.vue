@@ -10,8 +10,18 @@
         </p>
       </div>
     </div>
-
     <CarouselCardList :nfts="nfts" :page="currentValue" />
+    <div class="column has-text-right">
+      <b-button
+        tag="nuxt-link"
+        type="is-primary"
+        inverted
+        outlined
+        icon-right="chevron-right"
+        :to="`/${urlPrefix}/explore?search=&sort=UPDATED_AT_DESC&tab=GALLERY`">
+        {{ $t('helper.seeMore') }}
+      </b-button>
+    </div>
   </div>
 </template>
 
@@ -60,7 +70,7 @@ export default class LatestSales extends mixins(PrefixMixin, AuthMixin) {
 
   async fetchData() {
     const queryVars = {
-      limit: 10,
+      limit: 4,
       event: 'BUY',
       and: {},
     }

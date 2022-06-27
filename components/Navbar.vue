@@ -319,7 +319,7 @@ export default class NavbarMenu extends mixins(PrefixMixin) {
 }
 
 .navbar {
-  background: rgba(12, 12, 12, 0.7);
+  background: transparent;
   backdrop-filter: blur(20px);
   transform: translateZ(0px);
   transition: 0.3s ease;

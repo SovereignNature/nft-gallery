@@ -4,10 +4,7 @@
     <p class="subtitle">{{ error.message || 'Something went wrong' }}</p>
     <p v-if="error.path" class="subtitle">Path: {{ error.path }}</p>
     <!-- <p class="subtitle">Indexer is not working properly.</p> -->
-    <img
-      :src="`https://http.cat/${error.statusCode}`"
-      alt="Internal error cat"
-      class="mb-5" />
+    <img src="~/assets/disconnected.png" alt="Tree disconnected" class="mb-5" />
     <p class="subtitle">
       If you think this should't happen, report it to us by
       <a
