@@ -120,7 +120,6 @@ export default class NavbarProfileDropdown extends mixins(PrefixMixin) {
 @import '@/styles/variables';
 
 .navbar {
-  background: transparent;
   &__identity {
     @include from($desktop) {
       display: none;

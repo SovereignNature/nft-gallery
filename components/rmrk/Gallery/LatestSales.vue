@@ -68,9 +68,23 @@ export default class LatestSales extends mixins(PrefixMixin, AuthMixin) {
     this.fetchData()
   }
 
+  displayItemsByScreenSize(): number {
+    if (window.innerWidth < 768) {
+      console.log('um')
+      return 1
+    } else if (window.innerWidth >= 768 && window.innerWidth < 1024) {
+      return 2
+    } else if (window.innerWidth >= 1024 && window.innerWidth < 1440) {
+      return 3
+    } else {
+      return 4
+    }
+  }
+
   async fetchData() {
+    console.log(window.innerWidth)
     const queryVars = {
-      limit: 4,
+      limit: this.displayItemsByScreenSize(),
       event: 'BUY',
       and: {},
     }
