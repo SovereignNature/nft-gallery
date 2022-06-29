@@ -163,9 +163,7 @@ const components = {
 @Component<Profile>({
   components,
   head() {
-    const title = 'NFT Artist Profile on KodaDot'
     const metaData = {
-      title,
       type: 'profile',
       description:
         this.firstNFTData.description || 'Find more NFTs from this creator',
@@ -173,7 +171,6 @@ const components = {
       image: this.firstNFTData.image || this.defaultNFTImage,
     }
     return {
-      title,
       meta: [...this.$seoMeta(metaData)],
     }
   },

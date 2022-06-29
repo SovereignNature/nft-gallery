@@ -13,16 +13,13 @@ const components = {
 @Component<ExploreRmrk>({
   components,
   head() {
-    const title = 'Low minting fees and carbonless NFTs'
     const metaData = {
-      title,
       type: 'profile',
       description: 'Buy Carbonless NFTs on Kusama',
       url: '/rmrk/explore',
       image: `${this.$config.baseUrl}/k_card_collections.png`,
     }
     return {
-      title,
       meta: [...this.$seoMeta(metaData)],
     }
   },

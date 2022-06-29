@@ -11,16 +11,13 @@ import CreativeMint from '@/components/rmrk/Create/CreativeMint.vue'
     CreativeMint,
   },
   head() {
-    const title = 'KodaDot | Low fees and low carbon minting'
     const metaData = {
-      title,
       type: 'article',
       description: 'Create carbonless NFTs with low on-chain fees',
       url: '/rmrk/creative',
       image: `${this.$config.baseUrl}/k_card_mint.png`,
     }
     return {
-      title,
       meta: [...this.$seoMeta(metaData)],
     }
   },

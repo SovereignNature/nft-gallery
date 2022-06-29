@@ -27,16 +27,13 @@ const components = { Collection, NFT }
     return 'centered-half-layout'
   },
   head() {
-    const title = 'KodaDot | Low fees and low carbon minting'
     const metaData = {
-      title,
       type: 'article',
       description: 'Create carbonless NFTs with low on-chain fees',
       url: '/westmint/create',
       image: `${this.$config.baseUrl}/k_card_mint.png`,
     }
     return {
-      title,
       meta: [...this.$seoMeta(metaData)],
     }
   },
