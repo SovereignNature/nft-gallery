@@ -1,5 +1,8 @@
 <template>
-  <b-button type="is-primary" @click="openWalletConnectModal()">
+  <b-button
+    type="is-primary"
+    class="account-btn"
+    @click="openWalletConnectModal()">
     {{ $t(label) }}
   </b-button>
 </template>

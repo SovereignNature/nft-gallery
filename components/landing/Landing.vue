@@ -66,13 +66,13 @@ export default class Landing extends mixins(AuthMixin) {
 @include mobile {
   .homepage.section {
     padding-top: 0;
+    padding-bottom: 0;
   }
 }
 
 .homepage {
   content: '';
   width: 100%;
-  height: 100%;
   color: $text;
 
   &__title {

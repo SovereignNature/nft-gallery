@@ -335,6 +335,7 @@ export default class NavbarMenu extends mixins(PrefixMixin) {
       .navbar-menu {
         margin-right: 0;
         .button {
+          border-radius: 8px;
           height: 40px;
         }
       }
@@ -342,9 +343,11 @@ export default class NavbarMenu extends mixins(PrefixMixin) {
   }
 
   .navbar-link {
+    border-radius: 8px;
     &:hover {
       background-color: $primary !important;
       color: $text !important;
+      border-radius: 8px;
     }
   }
 
@@ -354,7 +357,9 @@ export default class NavbarMenu extends mixins(PrefixMixin) {
     margin-left: 0.5em;
     transition: 0.3s;
     background: rgba(9, 9, 9, 0.55);
+    border-radius: 8px !important;
     &:hover {
+      border-radius: 8px;
       background-color: $primary;
       color: $text;
     }
@@ -382,10 +387,12 @@ export default class NavbarMenu extends mixins(PrefixMixin) {
   }
 
   .navbar-dropdown {
-    border: 2px solid $primary-light !important;
+    border: 1px solid $light !important;
+    border-radius: 8px !important;
     .navbar-item {
       border: none !important;
       margin-left: 0 !important;
+      border-radius: 0 !important;
     }
   }
 
@@ -396,8 +403,9 @@ export default class NavbarMenu extends mixins(PrefixMixin) {
     min-width: 140px;
     margin: 0 1rem;
     input {
+      border-radius: 4px;
       border: inherit;
-      background-color: rgba(41, 41, 47, 0.5);
+      background-color: rgba(41, 41, 47, 0.6);
       &::placeholder {
         color: #898991 !important;
       }

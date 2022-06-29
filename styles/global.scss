@@ -23,8 +23,7 @@ body {
     font-weight: 500;
     transition: all 0.3s;
     color: $scheme-invert;
-
-
+    border-radius: 8px;
 
     &.is-primary {
       background-color: $scheme-main;
@@ -217,7 +216,7 @@ body {
 }
 
 button.button.is-bordered {
-  border: 2px solid $primary !important;
+  border: 2px solid $primary !important;;
 }
 
 button.button.is-bordered-light {
@@ -277,12 +276,24 @@ button.button.navbar-link-background {
       top: auto;
       padding-top: 0;
       width: 97%;
+      border: 1px solid $light;
+      border-radius: 8px;
 
       > .dropdown-content {
         max-height: 500px !important;
       }
     }
   }
+}
+
+//SNI custom
+.dropdown-content {
+  border: 1px solid $light;
+  border-radius: 8px !important;
+}
+
+.account-btn {
+  border-radius: 8px !important;
 }
 
 .carousel-list {
