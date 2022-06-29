@@ -1,16 +1,6 @@
 <template>
   <b-loading v-model="isLoading" is-full-page :can-cancel="true">
     <div class="loading-container">
-      <div
-        v-if="randomFunFactHeading && randomFunFactQuestion"
-        class="funfact-text">
-        <div class="text-bold funcfact-heading">{{ randomFunFactHeading }}</div>
-        <br />
-        <div class="pl-4 pr-4">
-          <b-icon size="is-large" icon="lightbulb" class="funfact-icon" />
-          <div class="question">{{ randomFunFactQuestion }}</div>
-        </div>
-      </div>
       <figure>
         <img class="loading-icon" :src="placeholder" />
         <figcaption v-if="status" class="loading-text">
@@ -85,11 +75,9 @@ export default class Loader extends Vue {
 
 .loading-container {
   text-align: center;
-  background: $frosted-glass-background;
-  backdrop-filter: $frosted-glass-backdrop-filter;
+  background: none;
   margin: 0rem 1rem;
   width: 450px;
-  border: 2px solid $primary-light;
 }
 .funfact-text {
   position: relative;
@@ -97,14 +85,14 @@ export default class Loader extends Vue {
   max-width: 450px;
 }
 .funcfact-heading {
-  color: $primary-light;
+  color: $light;
   font-size: 1.2rem;
   line-height: 2.5rem;
-  border-bottom: 1px solid #fff;
+  border-bottom: 1px solid $light;
   padding: 0.5rem 1rem;
 }
 .funfact-icon {
-  color: $primary-light;
+  color: $light;
 }
 .question {
   min-height: 70px;
