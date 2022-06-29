@@ -376,7 +376,7 @@
     },
     "34": {
       "heading": "Did you know...",
-      "question": "KodaDot has offset 10,000 kilograms of CO2, which is equivalent to 2,500 cheeseburgers."
+      "question": "Bio-Compendium has offset 10,000 kilograms of CO2, which is equivalent to 2,500 cheeseburgers."
     },
     "35": {
       "heading": "Did you know...",
@@ -554,7 +554,7 @@
     "tooltip": "Carbonless NFT means that you are helping cover costs for carbon credits and planting trees"
   },
   "support": {
-    "tooltip": "Cover costs mean that users help to support initial costs for KodaDot which stores your JPEG on your behalf."
+    "tooltip": "Cover costs mean that users help to support initial costs for Bio-Compendium which stores your JPEG on your behalf."
   },
   "termOfService": {
     "accept": "I confirm that I hold full copyright ownership of the submitted digital asset (or have sufficient permission by the owner to use the asset)"
@@ -655,9 +655,11 @@
     "copyRewardTooltip": "Your reward link copied to clipboard",
     "copyRewardLink": "Copy Reward Me link",
     "latestSales": "Latest sales",
+    "latestNfts": "Latest NFTs",
     "searchResultsText": "Showing results for",
     "ksmDiscoverText": "Discover, collect and sell Kusama NFTs",
     "latestSalesheading": "Discover the most recent sales on rmrk",
+    "latestNftsHeading": "Discover the most recent NFTs",
     "newestListDesc": "Discover the latest items on sale",
     "newestListHeading": "Newest List",
     "popularCollectionsHeading": "Popular Collections",
@@ -676,7 +678,7 @@
     "urlToTransform": {
       "label": "URL to transform",
       "placeholder": "singular.rmrk.app/collectibles/",
-      "copy": "Kodadot link successfuly copied"
+      "copy": "Bio-Compendium link successfuly copied"
     },
     "builtOn": "Built on",
     "signStuckText": "Stuck? Make sure to check for any popups and SIGN the transaction."
@@ -738,10 +740,10 @@
     }
   },
   "sharing": {
-    "collection": "Check out this awesome Collection on KodaDot",
-    "nft": "Check out this awesome NFT on KodaDot",
-    "pack": "Check out this awesome Pack on KodaDot",
-    "profile": "Check out this awesome Profile on KodaDot"
+    "collection": "Check out this awesome Collection on Bio-Compendium",
+    "nft": "Check out this awesome NFT on Bio-Compendium",
+    "pack": "Check out this awesome Pack on Bio-Compendium",
+    "profile": "Check out this awesome Profile on Bio-Compendium"
   },
   "warning": {
     "newTransactionWhilePriceSet": "Setting the price now requires making an additional transaction."
@@ -770,7 +772,7 @@
   },
   "walletConnect": {
     "walletHeading": "Connect Wallet",
-    "authText": "KodaDot will never ask you to provide your mnemonic phrase or private key.",
+    "authText": "We will never ask you to provide your mnemonic phrase or private key.",
     "understand": "I understand",
     "learnText": "Learn how to Connect",
     "downloadExtension": "Download extension"

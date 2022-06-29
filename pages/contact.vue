@@ -11,7 +11,7 @@ import Contact from '@/components/landing/Contact.vue'
     Contact,
   },
   head() {
-    const title = 'KodaDot cares about environmental impact'
+    const title = 'SNI cares about environmental impact'
     const metaData = {
       title,
       type: 'article',

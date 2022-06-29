@@ -14,7 +14,7 @@ import { Component, Vue } from 'nuxt-property-decorator'
 
 @Component<Partnership>({
   head() {
-    const title = 'KodaDot cares about environmental impact'
+    const title = 'SNI cares about environmental impact'
     const metaData = {
       title,
       type: 'article',

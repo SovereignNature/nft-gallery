@@ -4,9 +4,9 @@
 
     <div class="columns is-vcentered">
       <div class="column is-four-fifths">
-        <h1 class="title is-2">{{ $t('general.latestSales') }}</h1>
+        <h1 class="title is-2">{{ $t('general.latestNfts') }}</h1>
         <p class="subtitle is-size-5">
-          {{ $t('general.latestSalesheading') }}
+          {{ $t('general.latestNftsHeading') }}
         </p>
       </div>
     </div>
