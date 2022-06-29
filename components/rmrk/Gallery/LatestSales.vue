@@ -82,7 +82,6 @@ export default class LatestSales extends mixins(PrefixMixin, AuthMixin) {
   }
 
   async fetchData() {
-    console.log(window.innerWidth)
     const queryVars = {
       limit: this.displayItemsByScreenSize(),
       event: 'BUY',
