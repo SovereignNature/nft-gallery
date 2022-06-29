@@ -103,10 +103,11 @@ export default class Footer extends Vue {
 @import '@/styles/variables';
 
 .footer {
-  opacity: 0.3;
+  background-color: transparent;
+  backdrop-filter: blur(20px);
 
-  &:hover {
-    opacity: 1;
+  #keyboardShortcutsModal {
+    display: none;
   }
 
   &__wrapper {
@@ -115,7 +116,7 @@ export default class Footer extends Vue {
     align-items: center;
     flex-direction: column;
     padding: 16px;
-    height: 135px;
+    height: 112px;
 
     @include desktop {
       flex-direction: row;

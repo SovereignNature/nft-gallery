@@ -11,7 +11,7 @@
       </div>
     </div>
     <CarouselCardList :nfts="nfts" :page="currentValue" />
-    <div class="column has-text-right">
+    <div class="pt-4 has-text-right">
       <b-button
         tag="nuxt-link"
         type="is-primary"
