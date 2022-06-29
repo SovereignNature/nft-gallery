@@ -4,12 +4,6 @@
       <h1 class="title is-2">{{ title }}</h1>
       <p class="subtitle is-size-5">{{ subtitle }}</p>
     </div>
-    <div class="column">
-      <img
-        src="~/assets/rmrk-logo-pink-faded.png"
-        alt="RMRK"
-        class="rmrk-logo is-hidden-mobile" />
-    </div>
   </div>
 </template>
 
