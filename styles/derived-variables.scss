@@ -8,6 +8,12 @@ $info: #8FBDD7;
 $warning:#FEDB7C;
 $danger: #A41D0E;
 
+$orange: #FF5033;
+$orange-invert: findColorInvert($orange);
+$orange-dark: findDarkColor($info);
+$orange-light: findLightColor($primary);
+
+
 // $info: $cyan;
 $success: $green;
 // $warning: $yellow;
