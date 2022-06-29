@@ -103,8 +103,11 @@ export default class Footer extends Vue {
 @import '@/styles/variables';
 
 .footer {
-  background-color: transparent;
-  backdrop-filter: blur(20px);
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: none;
+  // backdrop-filter: blur(20px);
 
   #keyboardShortcutsModal {
     display: none;
