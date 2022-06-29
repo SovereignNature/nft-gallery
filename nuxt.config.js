@@ -38,8 +38,8 @@ export default defineNuxtConfig({
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'KodaDot - Kusama NFT Market Explorer',
-    titleTemplate: '%s | Low Carbon NFTs',
+    title: 'SNI | Bio-Compendium',
+    titleTemplate: '%s | An NFT Gallery Planting Value In Nature',
     htmlAttrs: {
       lang: 'en',
     },
@@ -53,40 +53,40 @@ export default defineNuxtConfig({
         content: 'Creating Carbonless NFTs on Kusama',
       },
       { property: 'og:locale', content: 'en_US' },
-      { property: 'twitter:site', content: '@KodaDot' },
+      { property: 'twitter:site', content: '@sovereignnature' },
       { property: 'twitter:card', content: 'summary_large_image' },
       { hid: 'og:type', property: 'og:type', content: 'website' },
       { hid: 'og:url', property: 'og:url', content: baseUrl },
       {
         hid: 'og:title',
         property: 'og:title',
-        content: 'KodaDot - Kusama NFT Market Explorer',
+        content: 'SNI | Bio-Compendium',
       },
       {
         hid: 'og:description',
         property: 'og:description',
-        content: 'Creating Carbonless NFTs on Kusama',
+        content: 'An NFT Gallery Planting Value In Nature',
       },
       {
         hid: 'og:image',
         property: 'og:image',
-        content: `${baseUrl}/kodadot_card_root.png`,
+        content: `${baseUrl}/sni_card.png`,
       },
       { hid: 'twitter:url', name: 'twitter:url', content: baseUrl },
       {
         hid: 'twitter:title',
         name: 'twitter:title',
-        content: 'KodaDot - Kusama NFT Market Explorer',
+        content: 'SNI | Bio-Compendium',
       },
       {
         hid: 'twitter:description',
         name: 'twitter:description',
-        content: 'Creating Carbonless NFTs on Kusama',
+        content: 'An NFT Gallery Planting Value In Nature',
       },
       {
         hid: 'twitter:image',
         name: 'twitter:image',
-        content: `${baseUrl}/kodadot_card_root.png`,
+        content: `${baseUrl}/sni_card.png`,
       },
     ],
     link: [
@@ -199,8 +199,8 @@ export default defineNuxtConfig({
 
   pwa: {
     manifest: {
-      name: 'KodaDot - Polkadot / Kusama NFT explorer',
-      short_name: 'KodaDot',
+      name: 'SNI | Bio-Compendium',
+      short_name: 'SNI',
       background_color: '#000000',
       theme_color: '#000000',
     },
