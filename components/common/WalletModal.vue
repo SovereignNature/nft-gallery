@@ -24,7 +24,7 @@
       <section class="modal-card-body" v-if="hasUserWalletAuth">
         <div class="has-text-centered">
           <img
-            src="~/assets/Koda_Beta.svg"
+            src="~/assets/SNI-logo.svg"
             alt="First NFT market explorer on Kusama and Polkadot"
             height="32" />
         </div>
