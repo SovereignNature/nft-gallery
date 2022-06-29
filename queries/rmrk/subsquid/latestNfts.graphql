@@ -1,0 +1,14 @@
+#import "../../fragments/nftSubsquid.graphql"
+#import "../../fragments/nftDetails.graphql"
+#import "../../fragments/baseMeta.graphql"
+
+query latestNfts {
+  nftEntities(limit: 4, orderBy: createdAt_DESC) {
+    #TODO: Parametrize NFT count
+    ...nftSubsquid
+    ...nftDetails
+    meta {
+      ...baseMeta
+    }
+  }
+}
