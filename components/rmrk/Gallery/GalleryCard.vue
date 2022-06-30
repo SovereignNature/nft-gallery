@@ -125,9 +125,9 @@ export default class GalleryCard extends mixins(AuthMixin) {
   overflow: hidden;
   border-radius: 0px !important;
 
-  &.is-current-owner {
-    box-shadow: 0px 2px 5px 0.5px #41b883;
-  }
+  // &.is-current-owner {
+  //   box-shadow: 0px 2px 5px 0.5px #41b883;
+  // }
 
   .has-text-overflow-ellipsis {
     overflow: hidden;
