@@ -115,4 +115,9 @@ export default class Landing extends mixins(AuthMixin) {
 li {
   list-style-type: square;
 }
+//TODO: Fix their footer for be on bottom in the landing page
+.footer {
+  position: absolute;
+  bottom: 0;
+}
 </style>

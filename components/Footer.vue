@@ -103,8 +103,6 @@ export default class Footer extends Vue {
 @import '@/styles/variables';
 
 .footer {
-  position: absolute;
-  bottom: 0;
   width: 100%;
   background: none;
   // backdrop-filter: blur(20px);
