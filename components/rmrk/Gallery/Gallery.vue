@@ -118,7 +118,7 @@ import { SearchQuery } from './Search/types'
 import shouldUpdate from '~/utils/shouldUpdate'
 import resolveQueryPath from '~/utils/queryPathResolver'
 import { unwrapSafe } from '~/utils/uniquery'
-import { exist } from '@/components/rmrk/Gallery/Search/exist'
+import Axios from 'axios'
 import { notificationTypes, showNotification } from '@/utils/notification'
 
 import passionQuery from '@/queries/rmrk/subsquid/passionFeed.graphql'
@@ -243,6 +243,11 @@ export default class Gallery extends mixins(
     }
     this.isFetchingData = true
     const query = await resolveQueryPath(this.urlPrefix, 'nftListWithSearch')
+
+    const res = await Axios.get('https://api.ipify.org?format=json') //TODO: Replace with propers IDs fetching
+
+    const collectionIds = res.data
+    console.log(collectionIds)
 
     if (this.hasPassionFeed) {
       await this.fetchPassionList()
