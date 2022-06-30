@@ -71,7 +71,6 @@ export default class LatestSales extends mixins(PrefixMixin, AuthMixin) {
 
   displayItemsByScreenSize(): number {
     if (window.innerWidth < 768) {
-      console.log('um')
       return 1
     } else if (window.innerWidth >= 768 && window.innerWidth < 1024) {
       return 2
