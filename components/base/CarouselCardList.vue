@@ -37,36 +37,6 @@
                   <Money :value="list.price" inline />
                 </p>
               </b-field>
-              <nuxt-link
-                :to="{ name: profileUrl, params: { id: list.issuer } }">
-                <div class="is-size-7 icon-text">
-                  <b-icon icon="palette" />
-                  <Identity
-                    :address="list.issuer"
-                    inline
-                    noOwerlow
-                    class="force-clip is-ellipsis" />
-                </div>
-              </nuxt-link>
-              <nuxt-link
-                v-if="list.currentOwner"
-                :to="{
-                  name: profileUrl,
-                  params: { id: list.currentOwner },
-                }">
-                <div class="is-size-7 icon-text">
-                  <b-icon icon="money-bill-alt" />
-                  <Identity
-                    :address="list.currentOwner"
-                    inline
-                    noOverflow
-                    class="force-clip is-ellipsis" />
-                </div>
-              </nuxt-link>
-              <time class="is-size-7 icon-text" v-if="list.timestamp">
-                <b-icon icon="clock" />
-                <span>{{ list.timestamp }}</span>
-              </time>
             </div>
           </div>
         </div>
