@@ -33,7 +33,7 @@ export default class BasicPopup extends Vue {
 }
 
 .popover-content-container {
-  border: 2px solid $primary;
+  border: 1px solid $light;
   max-width: 350px;
 }
 

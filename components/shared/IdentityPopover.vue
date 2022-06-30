@@ -228,7 +228,7 @@ export default class IdentityPopover extends mixins(
 }
 
 .popover-content-container {
-  border: 2px solid $primary;
+  border: 1px solid $light;
   max-width: 350px;
 }
 
