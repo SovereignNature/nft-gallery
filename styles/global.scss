@@ -26,7 +26,7 @@ body {
     border-radius: 8px;
 
     &.is-primary {
-      background-color: $scheme-main;
+      background-color: transparent;
       color: $light-text;
       
       &:hover,
@@ -87,8 +87,22 @@ body {
     text-transform: uppercase;
     font-size: calc(1rem * 0.75);
   }
+  .b-checkbox.checkbox{
+    input[type=checkbox] {
 
-  .switch {
+    }
+  } 
+
+  .switch,
+  .b-checkbox.checkbox {
+    input[type=checkbox] {
+      & + .check {
+        border-radius: 8px;
+        &::before {
+          border-radius: 8px;
+        }
+      }
+    }
     &.is-success {
       color: $success;
     }
@@ -188,6 +202,19 @@ body {
 
   .message.is-primary .message-body {
     color: $primary-light !important;
+  }
+  .message {
+    .message-body {
+      .field-body {
+        .field {
+          button {
+            &:not(:last-child) {
+              margin-right: 12px;
+            }
+          }
+        }
+      }
+    }
   }
   .tabs-container-mobile {
     .tab-content {
