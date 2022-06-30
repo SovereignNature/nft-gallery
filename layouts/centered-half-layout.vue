@@ -12,10 +12,6 @@
                 errorTitle="Offline Detected"
                 errorSubtitle="Please check your network connections" />
               <Nuxt v-else />
-              <img
-                src="~/assets/disconnected.png"
-                alt="Tree disconnected"
-                class="mb-5" />
             </div>
           </div>
         </div>
