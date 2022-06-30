@@ -110,10 +110,10 @@
               </div>
             </div>
           </div>
-          <LazyGalleryPriceChart
+          <!-- <LazyGalleryPriceChart
             class="mt-4"
             :priceChartData="priceChartData"
-            :openOnDefault="!compactGalleryItem" />
+            :openOnDefault="!compactGalleryItem" /> -->
         </div>
       </div>
     </template>
@@ -124,7 +124,7 @@
         :collectionId="nft.collectionId" />
       <GalleryItemCarousel type="visited" />
 
-      <div class="columns">
+      <!-- <div class="columns">
         <div class="column">
           <LazyGalleryHistory
             v-if="!isLoading"
@@ -132,7 +132,7 @@
             :open-on-default="!compactGalleryItem"
             @setPriceChartData="setPriceChartData" />
         </div>
-      </div>
+      </div> -->
     </template>
   </BaseGalleryItem>
 </template>

@@ -97,7 +97,7 @@
           @infinite="reachBottomHandler"></InfiniteLoading>
         <ScrollTopButton />
       </b-tab-item>
-      <b-tab-item label="Chart" value="chart">
+      <!-- <b-tab-item label="Chart" value="chart">
         <CollectionPriceChart :priceData="priceData" />
       </b-tab-item>
       <b-tab-item label="History" value="history">
@@ -108,7 +108,7 @@
           hideCollapse
           displayItem
           @setPriceChartData="setPriceChartData" />
-      </b-tab-item>
+      </b-tab-item> -->
       <b-tab-item label="Holders" value="holders">
         <CommonHolderTable
           v-if="!isLoading && activeTab === 'holders'"
