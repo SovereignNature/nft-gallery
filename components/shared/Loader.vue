@@ -11,6 +11,7 @@
         </div>
       </figure>
     </div>
+    <div ref="animationElement" class="animation" />
   </b-loading>
 </template>
 
@@ -36,7 +37,7 @@ export default class Loader extends Vue {
     }
   }
 
-  protected placeholder = '/preloader.svg'
+  protected placeholder = '/loader-sni.gif'
 
   protected randomNumber = randomIntegerBetween(1, 35)
 
