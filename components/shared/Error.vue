@@ -2,7 +2,7 @@
   <div id="Error" class="box container has-text-centered section">
     <p class="title">{{ errorTitle }}</p>
     <p class="subtitle">{{ errorSubtitle }}</p>
-    <img v-if="hasImg" :src="imgSrc" alt="Internal error cat" />
+    <img v-if="hasImg" src="~/assets/error-500.png" alt="errorCode" />
     <p class="subtitle">
       If you think this should't happen, report us by
       <a
@@ -23,9 +23,20 @@ export default class Error extends Vue {
   @Prop({ default: true }) readonly hasImg!: boolean
   @Prop({ default: 'Indexer Error' }) errorTitle!: string
   @Prop({ default: 'Indexer is not working properly.' }) errorSubtitle!: string
-
-  get imgSrc() {
-    return `https://http.cat/${this.$props.errorCode}`
-  }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/styles/variables';
+
+@media screen and (min-width: 480px) {
+  img {
+    width: 60%;
+  }
+}
+@media screen and (min-width: 1024px) {
+  img {
+    width: 50%;
+  }
+}
+</style>
