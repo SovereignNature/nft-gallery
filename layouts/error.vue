@@ -4,7 +4,10 @@
     <p class="subtitle">{{ error.message || 'Something went wrong' }}</p>
     <p v-if="error.path" class="subtitle">Path: {{ error.path }}</p>
     <p class="subtitle">Indexer is not working properly.</p>
-    <img :src="headline(true)" alt="Tree disconnected" class="mb-5" />
+    <img
+      :src="require(`~/assets/${headline(true)}`)"
+      :alt="headline(false)"
+      class="mb-5" />
     <p class="subtitle">
       If you think this should't happen, report it to us by
       <a
@@ -47,13 +50,13 @@ export default class Error extends mixins(PrefixMixin) {
     } else {
       switch (this.error?.statusCode) {
         case 404:
-          return '~/assets/error-404.png'
+          return 'error-404.png'
         case 410:
-          return '~/assets/error-401.png'
+          return 'error-401.png'
         case 500:
-          return '~/assets/error-500.png'
+          return 'error-500.png'
         default:
-          return 'Indexer Error'
+          return ''
       }
     }
   }
