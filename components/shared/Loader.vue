@@ -77,8 +77,12 @@ export default class Loader extends Vue {
 .loading-container {
   text-align: center;
   background: none;
-  margin: 0rem 1rem;
-  width: 450px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loading-icon {
+  max-width: 25%;
 }
 .funfact-text {
   position: relative;
