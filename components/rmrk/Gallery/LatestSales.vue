@@ -126,12 +126,12 @@ export default class LatestSales extends mixins(PrefixMixin, AuthMixin) {
 
     const imageOf = getProperImageLink(images)
     this.nfts = nftEntities.map((e: any) => ({
-      price: e.meta,
-      ...e.nft,
+      price: e.price,
+      // ...e.nft,
       // timestamp: formatDistanceToNow(new Date(e.timestamp), {
       //   addSuffix: true,
       // }),
-      image: imageOf(e.nft.meta.id, e.nft.meta.image),
+      image: imageOf(e.meta.id, e.meta.image),
     }))
   }
 }
