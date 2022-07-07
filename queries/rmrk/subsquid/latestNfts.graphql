@@ -2,9 +2,12 @@
 #import "../../fragments/nftDetails.graphql"
 #import "../../fragments/baseMeta.graphql"
 
-query latestNfts {
-  nftEntities(limit: 4, orderBy: createdAt_DESC) {
-    #TODO: Parametrize NFT count
+query latestNfts($collectionIds: [ID!], $limit: Int!) {
+  nftEntities(
+    limit: $limit
+    orderBy: createdAt_DESC
+    where: { collection: { id_in: $collectionIds } }
+  ) {
     ...nftSubsquid
     ...nftDetails
     meta {

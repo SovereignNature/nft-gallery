@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import { Component, mixins, Prop, Watch } from 'nuxt-property-decorator'
-import lastNftListByEvent from '@/queries/rmrk/subsquid/lastNftListByEvent.graphql'
+import latestNfts from '@/queries/rmrk/subsquid/latestNfts.graphql'
 import { formatDistanceToNow } from 'date-fns'
 import { fallbackMetaByNftEvent, convertLastEventToNft } from '@/utils/carousel'
 import { LastEvent } from '~/utils/types/types'
@@ -37,6 +37,7 @@ import {
 } from '~/utils/cachingStrategy'
 import PrefixMixin from '~/utils/mixins/prefixMixin'
 import AuthMixin from '@/utils/mixins/authMixin'
+import { getCollectionIds } from '~/utils/api/filtering'
 
 const components = {
   CarouselCardList: () => import('@/components/base/CarouselCardList.vue'),
@@ -82,20 +83,21 @@ export default class LatestSales extends mixins(PrefixMixin, AuthMixin) {
   }
 
   async fetchData() {
+    const collectionIds = await getCollectionIds()
+
     const queryVars = {
       limit: this.displayItemsByScreenSize(),
-      event: 'BUY',
+      collectionIds,
+      // event: 'BUY',
     }
-    if (this.isLogIn) {
-      queryVars.and.nft = {
-        issuer_in: this.passionList,
-      }
-    }
+    // if (this.isLogIn) {
+    //   queryVars.and.nft = {
+    //     issuer_in: this.passionList,
+    //   }
+    // }
     const result = await this.$apollo
-      .query<{
-        events: LastEvent[]
-      }>({
-        query: lastNftListByEvent,
+      .query({
+        query: latestNfts,
         client: this.client,
         variables: queryVars,
       })
@@ -109,17 +111,21 @@ export default class LatestSales extends mixins(PrefixMixin, AuthMixin) {
     }
   }
 
-  protected async handleResult({ data }: { data: { events: LastEvent[] } }) {
-    this.events = [...data.events].map(convertLastEventToNft)
+  protected async handleResult({ data }) {
+    const { nftEntities } = data
+    // this.events = [...data.events].map(convertLastEventToNft)
 
-    this.total = this.events.length
+    console.log(nftEntities)
 
-    await fallbackMetaByNftEvent(this.events)
+    this.total = nftEntities.length
+
+    // await fallbackMetaByNftEvent(this.events)
     const images = await getCloudflareImageLinks(
-      this.events.map(({ nft: { meta } }) => meta.id)
+      nftEntities.map(({ id }) => id)
     )
+
     const imageOf = getProperImageLink(images)
-    this.nfts = this.events.map((e: any) => ({
+    this.nfts = nftEntities.map((e: any) => ({
       price: e.meta,
       ...e.nft,
       timestamp: formatDistanceToNow(new Date(e.timestamp), {
