@@ -28,9 +28,6 @@
 <script lang="ts">
 import { Component, mixins, Prop, Watch } from 'nuxt-property-decorator'
 import latestNfts from '@/queries/rmrk/subsquid/latestNfts.graphql'
-import { formatDistanceToNow } from 'date-fns'
-import { fallbackMetaByNftEvent, convertLastEventToNft } from '@/utils/carousel'
-import { LastEvent } from '~/utils/types/types'
 import {
   getCloudflareImageLinks,
   getProperImageLink,
@@ -88,13 +85,7 @@ export default class LatestSales extends mixins(PrefixMixin, AuthMixin) {
     const queryVars = {
       limit: this.displayItemsByScreenSize(),
       collectionIds,
-      // event: 'BUY',
     }
-    // if (this.isLogIn) {
-    //   queryVars.and.nft = {
-    //     issuer_in: this.passionList,
-    //   }
-    // }
     const result = await this.$apollo
       .query({
         query: latestNfts,
@@ -113,24 +104,18 @@ export default class LatestSales extends mixins(PrefixMixin, AuthMixin) {
 
   protected async handleResult({ data }) {
     const { nftEntities } = data
-    // this.events = [...data.events].map(convertLastEventToNft)
 
     console.log(nftEntities)
 
     this.total = nftEntities.length
 
-    // await fallbackMetaByNftEvent(this.events)
     const images = await getCloudflareImageLinks(
       nftEntities.map(({ id }) => id)
     )
 
     const imageOf = getProperImageLink(images)
     this.nfts = nftEntities.map((e: any) => ({
-      price: e.price,
-      // ...e.nft,
-      // timestamp: formatDistanceToNow(new Date(e.timestamp), {
-      //   addSuffix: true,
-      // }),
+      ...e,
       image: imageOf(e.meta.id, e.meta.image),
     }))
   }
