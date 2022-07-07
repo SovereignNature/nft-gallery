@@ -63,6 +63,7 @@ import PrefixMixin from '~/utils/mixins/prefixMixin'
 import { Collection, CollectionWithMeta } from '../service/scheme'
 import { fetchCollectionMetadata, sanitizeIpfsUrl } from '../utils'
 import resolveQueryPath from '@/utils/queryPathResolver'
+import { getCollectionIds } from '~/utils/api/filtering'
 
 const components = {
   Pagination: () => import('./Pagination.vue'),
@@ -98,6 +99,9 @@ export default class Collections extends mixins(PrefixMixin) {
       this.urlPrefix,
       'collectionListWithSearch'
     )
+
+    const collectionIds = await getCollectionIds()
+
     this.$apollo.addSmartQuery('collection', {
       query: query.default,
       manual: true,
@@ -108,6 +112,7 @@ export default class Collections extends mixins(PrefixMixin) {
         return {
           first: this.first,
           offset: this.offset,
+          collectionIds,
         }
       },
       update: ({ collectionEntity }) => ({

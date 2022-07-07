@@ -6,12 +6,17 @@ query collectionListWithSearch(
   $offset: Int
   $search: [CollectionEntityWhereInput!]
   $orderBy: CollectionEntityOrderByInput = blockNumber_DESC
+  $collectionIds: [ID!]
 ) {
   collectionEntities(
     orderBy: [$orderBy, blockNumber_DESC]
     limit: $first
     offset: $offset
-    where: { nfts_some: { burned_eq: false }, AND: $search }
+    where: {
+      nfts_some: { burned_eq: false }
+      AND: $search
+      id_in: $collectionIds
+    }
   ) {
     ...collection
     ...collectionDetails

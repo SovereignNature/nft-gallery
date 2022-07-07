@@ -88,6 +88,7 @@ import {
 } from '~/utils/cachingStrategy'
 import { CollectionMetadata } from '~/components/rmrk/types'
 import { fastExtract } from '~/utils/ipfs'
+import { getCollectionIds } from '~/utils/api/filtering'
 
 interface Image extends HTMLImageElement {
   ffInitialized: boolean
@@ -189,6 +190,9 @@ export default class CollectionList extends mixins(
       return
     }
     this.isFetchingData = true
+
+    const collectionIds = await getCollectionIds()
+
     const result = await this.$apollo.query({
       query: collectionListWithSearch,
       client: this.urlPrefix === 'rmrk' ? 'subsquid' : this.urlPrefix,
@@ -200,6 +204,7 @@ export default class CollectionList extends mixins(
           : [],
         first: this.first,
         offset: (page - 1) * this.first,
+        collectionIds,
       },
     })
     await this.handleResult(result, loadDirection)
