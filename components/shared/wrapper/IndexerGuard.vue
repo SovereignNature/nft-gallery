@@ -2,7 +2,7 @@
   <div>
     <slot v-if="healthy" />
     <p v-else-if="showMessage" class="has-text-warning">
-      {{ $t('general.indexerReadOnly') }}
+      {{ $('general.indexerReadOnly') }}
     </p>
   </div>
 </template>
