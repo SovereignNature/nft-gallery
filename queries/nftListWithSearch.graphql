@@ -7,6 +7,7 @@ query nftListWithSearch(
   $denyList: [String!]
   $search: [NFTEntityFilter!]
   $orderBy: [NftEntitiesOrderBy!] = [BLOCK_NUMBER_DESC]
+  $collectionIds: [String!]
 ) {
   nFTEntities(
     orderBy: $orderBy
@@ -17,9 +18,7 @@ query nftListWithSearch(
       name: { notLike: "%Kanaria%" }
       issuer: { notIn: $denyList }
       and: $search
-      collectionId: {
-        in: ["008cb31b414e1d1514-MC-I-C", "008963f0b21767d825-BULLT"] #TODO: Fetch collections from API
-      }
+      collectionId: { in: $collectionIds }
     }
   ) {
     totalCount
