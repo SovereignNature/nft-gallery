@@ -87,6 +87,7 @@ import {
   faChartLine,
   faListUl,
   faTable,
+  faDownload,
 } from '@fortawesome/free-solid-svg-icons'
 
 // throws error, idk why
@@ -195,6 +196,7 @@ library.add(
   faWallet,
   faChartLine,
   faListUl,
+  faDownload,
 
   // Social
   faTwitter,

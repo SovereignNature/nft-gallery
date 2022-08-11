@@ -7,14 +7,14 @@
       :hasEdition="false">
       <template v-slot:main>
         <BasicSwitch key="nsfw" v-model="nsfw" label="mint.nfsw" />
-        <CustomAttributeInput
-          key="attributes"
-          v-show="base.selectedCollection"
-          :max="10"
-          v-model="attributes"
-          class="mb-3"
-          visible="collapse.collection.attributes.show"
-          hidden="collapse.collection.attributes.hide" />
+        <div v-show="base.selectedCollection" key="attributes">
+          <CustomAttributeInput
+            :max="10"
+            v-model="attributes"
+            class="mb-3"
+            visible="collapse.collection.attributes.show"
+            hidden="collapse.collection.attributes.hide" />
+        </div>
       </template>
       <template v-slot:footer>
         <b-field key="advanced">
@@ -46,7 +46,6 @@
 </template>
 
 <script lang="ts">
-import { Component, mixins, Vue, Watch } from 'nuxt-property-decorator'
 import {
   nsfwAttribute,
   offsetAttribute,
@@ -54,23 +53,26 @@ import {
 } from '@/components/rmrk/Create/mintUtils'
 import { Attribute } from '@/components/rmrk/types'
 import collectionForMint from '@/queries/unique/collectionForMint.graphql'
-import { unSanitizeIpfsUrl } from '@kodadot1/minimark'
 import ChainMixin from '@/utils/mixins/chainMixin'
+import { pinFileToIPFS, pinJson, PinningKey } from '@/utils/nftStorage'
 import { notificationTypes, showNotification } from '@/utils/notification'
-import { pinFileToIPFS, pinJson, PinningKey } from '@/utils/pinning'
 import shouldUpdate from '@/utils/shouldUpdate'
 import { canSupport } from '@/utils/support'
-import { createMetadata } from '@kodadot1/minimark'
-import Connector from '@kodadot1/sub-api'
+import { createMetadata, unSanitizeIpfsUrl } from '@kodadot1/minimark'
+import { onApiConnect } from '@kodadot1/sub-api'
 import { getMany, update } from 'idb-keyval'
+import { Component, mixins, Vue, Watch } from 'nuxt-property-decorator'
 
-import { BaseMintedCollection, BaseTokenType } from '~/components/base/types'
-import { fetchCollectionMetadata } from '~/components/rmrk/utils'
-import onApiConnect from '~/utils/api/general'
-import { IPFS_KODADOT_IMAGE_PLACEHOLDER } from '~/utils/constants'
-import AuthMixin from '~/utils/mixins/authMixin'
-import MetaTransactionMixin from '~/utils/mixins/metaMixin'
-import PrefixMixin from '~/utils/mixins/prefixMixin'
+import { BaseMintedCollection, BaseTokenType } from '@/components/base/types'
+import { fetchCollectionMetadata } from '@/components/rmrk/utils'
+import {
+  DETAIL_TIMEOUT,
+  IPFS_KODADOT_IMAGE_PLACEHOLDER,
+} from '@/utils/constants'
+import AuthMixin from '@/utils/mixins/authMixin'
+import MetaTransactionMixin from '@/utils/mixins/metaMixin'
+import PrefixMixin from '@/utils/mixins/prefixMixin'
+import UseApiMixin from '@/utils/mixins/useApiMixin'
 import { getInstanceDeposit, getMetadataDeposit } from '../apiConstants'
 import { createTokenId, tokenIdToRoute } from '../utils'
 
@@ -97,7 +99,8 @@ export default class CreateToken extends mixins(
   MetaTransactionMixin,
   ChainMixin,
   PrefixMixin,
-  AuthMixin
+  AuthMixin,
+  UseApiMixin
 ) {
   protected base: BaseTokenType<MintedCollection> = {
     name: '',
@@ -119,9 +122,9 @@ export default class CreateToken extends mixins(
   }
 
   public async created() {
-    onApiConnect(() => {
-      const instanceDeposit = getInstanceDeposit()
-      const metadataDeposit = getMetadataDeposit()
+    onApiConnect(this.apiUrl, (api) => {
+      const instanceDeposit = getInstanceDeposit(api)
+      const metadataDeposit = getMetadataDeposit(api)
       this.deposit = (instanceDeposit + metadataDeposit).toString()
     })
   }
@@ -159,6 +162,7 @@ export default class CreateToken extends mixins(
               ?.reverse()[0] || '0-0'
           ).id
         ) || 0,
+      totalCount: ce.nfts?.nodes.filter((nft) => !nft.burned)?.length,
     }))
 
     this.loadCollectionMeta()
@@ -213,7 +217,7 @@ export default class CreateToken extends mixins(
 
     this.isLoading = true
     this.status = 'loader.ipfs'
-    const { api } = Connector.getInstance()
+    const api = await this.useApi()
     const { selectedCollection } = this.base
     const {
       alreadyMinted,
@@ -244,7 +248,7 @@ export default class CreateToken extends mixins(
           )
         )
 
-      const support = await canSupport(this.hasSupport)
+      const support = await canSupport(api, this.hasSupport)
       //
       const args = [[create, meta, ...attributes, ...support]]
 
@@ -310,13 +314,15 @@ export default class CreateToken extends mixins(
   }
 
   protected navigateToDetail(collection: string, id: string): void {
-    showNotification('You will go to the detail in 2 seconds')
+    showNotification(
+      `You will go to the detail in ${DETAIL_TIMEOUT / 1000} seconds`
+    )
     const go = () =>
       this.$router.push({
         path: `/${this.urlPrefix}/gallery/${createTokenId(collection, id)}`,
         query: { message: 'congrats' },
       })
-    setTimeout(go, 2000)
+    setTimeout(go, DETAIL_TIMEOUT)
   }
 }
 </script>

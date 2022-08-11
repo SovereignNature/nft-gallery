@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { Component, mixins, Prop, Watch } from 'nuxt-property-decorator'
+import { Component, mixins } from 'nuxt-property-decorator'
 import latestNfts from '@/queries/rmrk/subsquid/latestNfts.graphql'
 import {
   getCloudflareImageLinks,
@@ -46,9 +46,8 @@ const components = {
   components,
 })
 export default class LatestSales extends mixins(PrefixMixin, AuthMixin) {
-  @Prop({ required: false, type: Array, default: () => [] })
-  passionList?: string[]
-
+  // @Prop({ required: false, type: Array, default: () => [] })
+  // passionList?: string[]
   private nfts: any[] = []
   private events: any[] = []
   private currentValue = 1
@@ -62,10 +61,10 @@ export default class LatestSales extends mixins(PrefixMixin, AuthMixin) {
     this.fetchData()
   }
 
-  @Watch('passionList')
-  private onPassionList() {
-    this.fetchData()
-  }
+  // @Watch('passionList')
+  // private onPassionList() {
+  //   this.fetchData()
+  // }
 
   displayItemsByScreenSize(): number {
     if (window.innerWidth < 768) {

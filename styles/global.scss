@@ -3,8 +3,8 @@
 }
 
 html,
-body,pa
-div#__nuxt,
+body,
+pa div#__nuxt,
 div#__layout {
   background: url('../assets/sni-background.png');
   background-position: center;
@@ -28,7 +28,7 @@ body {
     &.is-primary {
       background-color: transparent;
       color: $light-text;
-      
+
       &:hover,
       &:focus {
         border-color: $primary;
@@ -87,15 +87,14 @@ body {
     text-transform: uppercase;
     font-size: calc(1rem * 0.75);
   }
-  .b-checkbox.checkbox{
-    input[type=checkbox] {
-
+  .b-checkbox.checkbox {
+    input[type='checkbox'] {
     }
-  } 
+  }
 
   .switch,
   .b-checkbox.checkbox {
-    input[type=checkbox] {
+    input[type='checkbox'] {
       & + .check {
         border-radius: 8px;
         &::before {
@@ -154,10 +153,6 @@ body {
     color: $lightpink;
   }
 
-  .message.is-primary {
-    background-color: $primary-light !important;
-  }
-
   .button.is-text {
     &:hover {
       background-color: $grey-darker;
@@ -200,8 +195,9 @@ body {
     color: $primary-light;
   }
 
-  .message.is-primary .message-body {
-    color: $primary-light !important;
+  .message.is-primary .message-body,
+  .message.is-primary .icon {
+    color: $white !important;
   }
   .message {
     .message-body {
@@ -243,7 +239,7 @@ body {
 }
 
 button.button.is-bordered {
-  border: 2px solid $primary !important;;
+  border: 2px solid $primary !important;
 }
 
 button.button.is-bordered-light {
@@ -334,9 +330,9 @@ button.button.navbar-link-background {
 
 @media screen and (max-width: 768px) {
   .column-padding {
-    padding-left: 0!important;
-    padding-right: 0!important;
-    margin: 0 -12px!important
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0 -12px !important;
   }
 }
 

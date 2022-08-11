@@ -110,6 +110,8 @@
           <b-navbar-item tag="nuxt-link" to="/hot"> Hot </b-navbar-item>
         </template>
       </b-navbar-dropdown>
+      <LazyChainSelect class="custom-navbar-item" id="NavChainSelect" />
+      <LazySwitchLocale class="custom-navbar-item" id="NavLocaleChanger" />
       <NavbarProfileDropdown :isRmrk="isRmrk" id="NavProfile" />
     </template>
     <template #end v-else>

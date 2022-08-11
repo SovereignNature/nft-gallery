@@ -22,7 +22,10 @@
       </template>
       <div class="box">
         <div class="is-flex is-justify-content-space-between box-container">
-          <b-select placeholder="Select an event" v-model="selectedEvent">
+          <b-select
+            placeholder="Select an event"
+            v-model="selectedEvent"
+            data-cy="select-event">
             <option
               v-for="option in uniqType"
               :value="option.type"
@@ -110,14 +113,9 @@
               :label="props.row.Date"
               position="is-right"
               append-to-body>
-              <span v-if="hasDisabledBlockUrl"> {{ props.row.Time }}</span>
-              <a
-                v-else
-                target="_blank"
-                rel="noopener noreferrer"
-                :href="getBlockUrl(props.row.Block)">
-                {{ props.row.Time }}</a
-              >
+              <BlockExplorerLink
+                :blockId="props.row.Block"
+                :text="props.row.Time" />
             </b-tooltip>
           </b-table-column>
         </b-table>
@@ -127,7 +125,6 @@
 </template>
 
 <script lang="ts">
-import { urlBuilderBlockNumber } from '@/utils/explorerGuide'
 import ChainMixin from '@/utils/mixins/chainMixin'
 import { Component, Prop, Watch, mixins } from 'nuxt-property-decorator'
 import { Interaction as EventInteraction } from '../service/scheme'
@@ -149,6 +146,7 @@ import PrefixMixin from '~/utils/mixins/prefixMixin'
 const components = {
   Identity: () => import('@/components/shared/format/Identity.vue'),
   Pagination: () => import('@/components/rmrk/Gallery/Pagination.vue'),
+  BlockExplorerLink: () => import('@/components/shared/BlockExplorerLink.vue'),
 }
 
 type TableRowItem = {
@@ -244,11 +242,6 @@ export default class History extends mixins(
 
   get isPercentageColumnVisible() {
     return [HistoryEventType.ALL, Interaction.BUY].includes(this.event)
-  }
-
-  get hasDisabledBlockUrl(): boolean {
-    const disableBlockUrlPrefix = ['bsx']
-    return disableBlockUrlPrefix.includes(this.urlPrefix)
   }
 
   get selectedEvent(): HistoryEventType {
@@ -399,14 +392,6 @@ export default class History extends mixins(
 
   private parsePrice(amount): string {
     return parseAmount(amount, this.decimals, this.unit)
-  }
-
-  protected getBlockUrl(block: string): string {
-    return urlBuilderBlockNumber(
-      block,
-      this.$store.getters['explorer/getCurrentChain'],
-      'subscan'
-    )
   }
 
   @Watch('events', { immediate: true })

@@ -58,12 +58,18 @@
 </template>
 
 <script lang="ts">
+import { DETAIL_TIMEOUT } from '@/utils/constants'
 import { uploadDirect } from '@/utils/directUpload'
 import { emptyObject } from '@/utils/empty'
+import { askGpt } from '@/utils/gpt'
+import AuthMixin from '@/utils/mixins/authMixin'
 import ChainMixin from '@/utils/mixins/chainMixin'
+import MetaTransactionMixin from '@/utils/mixins/metaMixin'
 import RmrkVersionMixin from '@/utils/mixins/rmrkVersionMixin'
+import UseApiMixin from '@/utils/mixins/useApiMixin'
+import { pinFileToIPFS, pinJson, PinningKey } from '@/utils/nftStorage'
 import { notificationTypes, showNotification } from '@/utils/notification'
-import { pinFileToIPFS, pinJson, PinningKey } from '@/utils/pinning'
+import shouldUpdate from '@/utils/shouldUpdate'
 import {
   basicUpdateNameFunction,
   createCollection,
@@ -76,15 +82,10 @@ import {
   toCollectionId,
   unSanitizeIpfsUrl,
 } from '@kodadot1/minimark'
-import Connector from '@kodadot1/sub-api'
 import { Component, mixins, Watch } from 'nuxt-property-decorator'
-import AuthMixin from '~/utils/mixins/authMixin'
-import MetaTransactionMixin from '~/utils/mixins/metaMixin'
-import shouldUpdate from '~/utils/shouldUpdate'
 import { getNftId, NFT, NFTMetadata, SimpleNFT } from '../service/scheme'
 import { MediaType } from '../types'
 import { resolveMedia, sanitizeIpfsUrl } from '../utils'
-import { askGpt } from '@/utils/gpt'
 
 const components = {
   AuthField: () => import('@/components/shared/form/AuthField.vue'),
@@ -102,7 +103,8 @@ export default class CreativeMint extends mixins(
   RmrkVersionMixin,
   MetaTransactionMixin,
   ChainMixin,
-  AuthMixin
+  AuthMixin,
+  UseApiMixin
 ) {
   private rmrkMint: SimpleNFT = {
     ...emptyObject<SimpleNFT>(),
@@ -148,7 +150,7 @@ export default class CreativeMint extends mixins(
   protected async sub(): Promise<void> {
     this.isLoading = true
     this.status = 'loader.ipfs'
-    const { api } = Connector.getInstance()
+    const api = await this.useApi()
 
     try {
       const meta = await this.constructMeta()
@@ -242,13 +244,15 @@ export default class CreativeMint extends mixins(
   }
 
   protected navigateToDetail(nft: NFT, blockNumber: string) {
-    showNotification('You will go to the detail in 2 seconds')
+    showNotification(
+      `You will go to the detail in ${DETAIL_TIMEOUT / 1000} seconds`
+    )
     const go = () =>
       this.$router.push({
         path: `/rmrk/detail/${getNftId(nft, blockNumber)}`,
         query: { message: 'congrats' },
       })
-    setTimeout(go, 2000)
+    setTimeout(go, DETAIL_TIMEOUT)
   }
 
   @Watch('file')

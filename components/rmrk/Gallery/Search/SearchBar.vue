@@ -2,8 +2,7 @@
   <div class="mb-3">
     <div class="row" v-if="!isVisible && !hideSearchInput">
       <div v-if="sliderDirty && !hideFilter" class="is-size-7">
-        Prices ranging from {{ this.query.priceMin / 1000000000000 }} to
-        {{ this.query.priceMax / 1000000000000 }}
+        <PriceRange :from="minPrice" :to="maxPrice" inline />
       </div>
     </div>
     <div class="columns mb-0">
@@ -14,7 +13,8 @@
           aria-controls="sortAndFilter"
           type="is-primary is-bordered-light"
           class="is-hidden-mobile mr-2"
-          @click="isVisible = !isVisible" />
+          @click="isVisible = !isVisible"
+          data-cy="expand-search" />
         <slot name="next-filter"></slot>
         <b-autocomplete
           v-if="!hideSearchInput"
@@ -30,6 +30,7 @@
           max-height="550px"
           dropdown-position="is-bottom-left"
           expanded
+          @blur="onBlur"
           @typing="updateSuggestion"
           @keydown.native.enter="nativeSearch"
           @focus="fetchSuggestionsOnce"
@@ -91,8 +92,7 @@
         </b-autocomplete>
         <div v-if="!isVisible && hideSearchInput">
           <div v-if="sliderDirty" class="is-size-7">
-            Prices ranging from {{ this.query.priceMin / 1000000000000 }} to
-            {{ this.query.priceMax / 1000000000000 }}
+            <PriceRange :from="minPrice" :to="maxPrice" inline />
           </div>
         </div>
       </b-field>
@@ -119,7 +119,7 @@
           multipleSelect
           class="column is-4 mb-0"
           :value="sortByMultiple"
-          @input="updateSortBy" />
+          @input="updateSortBy($event, sortByMultiple)" />
         <BasicSwitch
           class="is-flex column is-4"
           v-model="vListed"
@@ -127,20 +127,42 @@
           size="is-medium"
           labelColor="is-success" />
       </div>
-      <b-slider
-        v-if="listed"
-        class="column is-half"
-        v-model="rangeSlider"
-        :custom-formatter="(val) => `${val} KSM`"
-        :max="30"
-        :min="0"
-        :step="1"
-        ticks
-        @change="sliderChange">
-      </b-slider>
+      <div v-if="!hideFilter">
+        <b-field class="columns mb-0">
+          <b-input
+            type="number"
+            min="0"
+            step="any"
+            class="column is-2"
+            :placeholder="$t('query.priceRange.minPrice')"
+            v-model="rangeSlider[0]"
+            data-cy="input-min">
+          </b-input>
+          <b-input
+            min="0"
+            step="any"
+            type="number"
+            class="column is-2"
+            :placeholder="$t('query.priceRange.maxPrice')"
+            v-model="rangeSlider[1]"
+            data-cy="input-max">
+          </b-input>
+          <div class="column is-1">
+            <b-button
+              class="is-primary"
+              @click="sliderChange(rangeSlider)"
+              :disabled="applyDisabled"
+              data-cy="apply">
+              {{ $t('general.apply') }}
+            </b-button>
+          </div>
+        </b-field>
+        <p class="help is-danger" v-if="applyDisabled">
+          {{ $t('query.priceRange.priceValidation') }}
+        </p>
+      </div>
       <div v-if="sliderDirty" class="is-size-7">
-        Prices ranging from {{ this.query.priceMin / 1000000000000 }} to
-        {{ this.query.priceMax / 1000000000000 }}
+        <PriceRange :from="minPrice" :to="maxPrice" inline />
       </div>
     </b-collapse>
   </div>
@@ -150,26 +172,26 @@
 import { Component, Prop, Emit, mixins } from 'nuxt-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
 import { exist, existArray } from './exist'
-import nftListWithSearch from '@/queries/nftListWithSearch.graphql'
 import seriesInsightList from '@/queries/rmrk/subsquid/seriesInsightList.graphql'
-import collectionListWithSearch from '@/queries/collectionListWithSearch.graphql'
 import lastNftListByEvent from '@/queries/rmrk/subsquid/lastNftListByEvent.graphql'
 import { SearchQuery, SearchSuggestion } from './types'
 import { denyList } from '@/utils/constants'
 import { NFT, NFTWithMeta, CollectionWithMeta } from '../../service/scheme'
 import { getSanitizer } from '../../utils'
-import shouldUpdate from '~/utils/shouldUpdate'
 import PrefixMixin from '~/utils/mixins/prefixMixin'
 import KeyboardEventsMixin from '~/utils/mixins/keyboardEventsMixin'
-import { mapNFTorCollectionMetadata } from '~/utils/mappers'
+import { logError, mapNFTorCollectionMetadata } from '~/utils/mappers'
 import {
   getCloudflareImageLinks,
   processMetadata,
 } from '~/utils/cachingStrategy'
 import { fastExtract } from '~/utils/ipfs'
 import { convertLastEventToNft } from '@/utils/carousel'
-import { NFT_SORT_CONDITION_LIST } from '@/utils/constants'
+import { NFT_SQUID_SORT_CONDITION_LIST } from '@/utils/constants'
 import { LastEvent } from '~/utils/types/types'
+import resolveQueryPath from '@/utils/queryPathResolver'
+import { unwrapSafe } from '~/utils/uniquery'
+import ChainMixin from '~/utils/mixins/chainMixin'
 
 const SearchPageRoutePathList = ['/collections', '/gallery', '/explore']
 
@@ -180,17 +202,18 @@ const SearchPageRoutePathList = ['/collections', '/gallery', '/explore']
     Pagination: () => import('@/components/rmrk/Gallery/Pagination.vue'),
     BasicSwitch: () => import('@/components/shared/form/BasicSwitch.vue'),
     BasicImage: () => import('@/components/shared/view/BasicImage.vue'),
+    PriceRange: () => import('@/components/shared/format/PriceRange.vue'),
     // PreviewMediaResolver: () => import('@/components/rmrk/Media/PreviewMediaResolver.vue'), // TODO: need to fix CSS for model-viewer
   },
 })
 export default class SearchBar extends mixins(
   PrefixMixin,
-  KeyboardEventsMixin
+  KeyboardEventsMixin,
+  ChainMixin
 ) {
   @Prop(String) public search!: string
   @Prop(String) public type!: string
-  @Prop({ type: Array, default: () => ['BLOCK_NUMBER_DESC'] })
-  public sortByMultiple!: string[]
+  @Prop({ type: Array, default: () => [] }) public sortByMultiple!: string[]
   @Prop(String) public searchColumnClass!: string
   @Prop({ type: Boolean, default: false }) public listed!: boolean
   @Prop(Boolean) public hideFilter!: boolean
@@ -199,10 +222,10 @@ export default class SearchBar extends mixins(
 
   protected isVisible = false
   private query: SearchQuery = {
-    search: '',
-    type: '',
-    listed: true,
-    sortByMultiple: ['BLOCK_NUMBER_DESC'],
+    search: this.$route.query?.search?.toString() ?? '',
+    type: this.$route.query?.type?.toString() ?? '',
+    sortByMultiple: this.sortByMultiple ?? [],
+    listed: this.$route.query?.listed?.toString() === 'true',
   }
 
   private first = 30
@@ -212,13 +235,41 @@ export default class SearchBar extends mixins(
   private searchString = ''
   private name = ''
   private searched: NFT[] = []
-  private rangeSlider = [0, 5]
+  private rangeSlider: [
+    number | string | undefined,
+    number | string | undefined
+  ] = [undefined, undefined]
   private sliderDirty = false
   private searchSuggestionEachTypeMaxNum = 3
   private bigNum = 1e10
   private keyDownNativeEnterFlag = true
   private defaultNFTSuggestions: NFTWithMeta[] = []
   private defaultCollectionSuggestions: CollectionWithMeta[] = []
+
+  get applyDisabled(): boolean {
+    const [min, max] = this.rangeSlider as [
+      string | undefined,
+      string | undefined
+    ]
+    if (!min || !max) {
+      return false
+    }
+    return parseFloat(min) > parseFloat(max)
+  }
+
+  get minPrice(): number | undefined {
+    if (this.$route.query.min) {
+      return parseFloat(this.$route.query.min.toString()) * 10 ** this.decimals
+    }
+    return undefined
+  }
+
+  get maxPrice(): number | undefined {
+    if (this.$route.query.max) {
+      return parseFloat(this.$route.query.max.toString()) * 10 ** this.decimals
+    }
+    return undefined
+  }
 
   public async fetchSuggestionsOnce() {
     if (
@@ -343,7 +394,9 @@ export default class SearchBar extends mixins(
     return this.listed
   }
 
-  set vListed(listed: boolean) {
+  set vListed(
+    listed: boolean | { listed: boolean; min?: string; max?: string }
+  ) {
     this.updateListed(listed)
   }
 
@@ -362,19 +415,12 @@ export default class SearchBar extends mixins(
   get autocompleteFooterShow() {
     const searchResultExist =
       this.nftResult.length > 0 || this.collectionResult.length > 0
-    if (
-      searchResultExist &&
-      this.searchSuggestionEachTypeMaxNum !== this.bigNum
-    ) {
-      return true
-    }
-    return false
+    return (
+      searchResultExist && this.searchSuggestionEachTypeMaxNum !== this.bigNum
+    )
   }
 
   get searchSuggestion() {
-    if (this.urlPrefix !== 'rmrk') {
-      return []
-    }
     const suggestions: SearchSuggestion[] = []
     const eachTypeMaxNum = this.searchSuggestionEachTypeMaxNum
 
@@ -445,9 +491,22 @@ export default class SearchBar extends mixins(
 
   @Emit('update:listed')
   @Debounce(50)
-  updateListed(value: string | boolean): boolean {
-    const v = String(value)
-    this.replaceUrl(v, undefined, 'listed')
+  updateListed(
+    value: string | boolean | { listed: boolean; min?: string; max?: string }
+  ): boolean {
+    let v = ''
+    if (typeof value === 'string' || typeof value === 'boolean') {
+      v = String(value)
+      this.replaceUrl({ listed: v })
+    } else {
+      const { listed, max, min } = value
+      v = String(listed)
+      this.replaceUrl({
+        listed,
+        max,
+        min,
+      })
+    }
     return v === 'true'
   }
 
@@ -468,19 +527,37 @@ export default class SearchBar extends mixins(
   @Emit('update:type')
   @Debounce(50)
   updateType(value: string): string {
-    this.replaceUrl(value, undefined, 'type')
+    this.replaceUrl({ type: value })
     return value
   }
 
   @Emit('update:sortByMultiple')
   @Debounce(400)
-  updateSortBy(value: string[] | string): string[] {
+  updateSortBy(value: string[] | string, $event?): string[] {
     const final = (Array.isArray(value) ? value : [value]).filter((condition) =>
-      NFT_SORT_CONDITION_LIST.includes(condition)
+      NFT_SQUID_SORT_CONDITION_LIST.includes(condition)
     )
+    const listed = final.some(
+      (condition) => condition.toLowerCase().indexOf('price') > -1
+    )
+    if (listed && !this.vListed) {
+      this.vListed = true
+    }
 
-    this.replaceUrl(final, undefined, 'sort')
-    return final
+    if ($event?.length > final.length || !$event) {
+      this.replaceUrl({ sort: final })
+      return final
+    }
+    let newFinal: string[] = []
+    if (final.length > 0) {
+      const newlySelected = final[final.length - 1].split('_')[0]
+      newFinal = $event.filter(
+        (option) => option.split('_')[0] !== newlySelected
+      )
+      newFinal.push(final[final.length - 1])
+    }
+    this.replaceUrl({ sort: newFinal })
+    return newFinal
   }
 
   // not highlight search, just input keyword and enter
@@ -492,6 +569,7 @@ export default class SearchBar extends mixins(
           type: 'Search',
           name: this.searchString,
         })
+        this.redirectToGalleryPageIfNeed()
       }
     }, 100) // it means no highlight and not highlight select
   }
@@ -509,13 +587,16 @@ export default class SearchBar extends mixins(
       this.insertNewHistory()
       this.updateSearch(value.name)
     } else if (value.__typename === 'NFTEntity') {
-      this.$router.push({ name: 'rmrk-detail-id', params: { id: value.id } })
+      this.$router.push({
+        name: this.routeOf('detail-id'),
+        params: { id: value.id },
+      })
     } else if (
       value.__typename === 'CollectionEntity' ||
       value.__typename === 'Series'
     ) {
       this.$router.push({
-        name: 'rmrk-collection-id',
+        name: this.routeOf('collection-id'),
         params: { id: value.id },
       })
     }
@@ -524,17 +605,26 @@ export default class SearchBar extends mixins(
   redirectToGalleryPageIfNeed() {
     if (SearchPageRoutePathList.indexOf(this.$route.path) === -1) {
       this.$router.replace({
-        name: 'rmrk-explore',
+        name: this.routeOf('explore'),
         query: this.$route.query,
       })
     }
   }
 
+  protected routeOf(url: string): string {
+    return `${this.urlPrefix}-${url}`
+  }
+
+  onBlur() {
+    this.updateSearch(this.name)
+  }
+
   @Emit('update:search')
   @Debounce(50)
   updateSearch(value: string): string {
-    shouldUpdate(value, this.searchQuery) && this.replaceUrl(value)
-    this.redirectToGalleryPageIfNeed()
+    if (value && value !== this.searchQuery) {
+      this.replaceUrl({ search: value })
+    }
     return value
   }
 
@@ -545,7 +635,7 @@ export default class SearchBar extends mixins(
         this.sliderDirty = true
       }
       this.rangeSlider = [min, this.rangeSlider[1]]
-      this.sliderChangeMin(min * 1000000000000)
+      this.sliderChangeMin(min * 10 ** this.decimals)
     }
   }
 
@@ -556,13 +646,13 @@ export default class SearchBar extends mixins(
         this.sliderDirty = true
       }
       this.rangeSlider = [this.rangeSlider[0], max]
-      this.sliderChangeMax(max * 1000000000000)
+      this.sliderChangeMax(max * 10 ** this.decimals)
     }
   }
 
   // when user type some keyword, frontEnd will query related information
   @Debounce(50)
-  updateSuggestion(value: string) {
+  async updateSuggestion(value: string) {
     this.searchString = value
     //To handle empty string
     if (!value) {
@@ -574,10 +664,13 @@ export default class SearchBar extends mixins(
 
     this.query.search = value
     this.searchSuggestionEachTypeMaxNum = 3
-
-    this.$apollo
-      .query({
-        query: nftListWithSearch,
+    try {
+      const queryNft = await resolveQueryPath(
+        this.urlPrefix,
+        'nftListWithSearch'
+      )
+      const nfts = this.$apollo.query({
+        query: queryNft.default,
         client: this.urlPrefix,
         variables: {
           first: this.first,
@@ -587,88 +680,84 @@ export default class SearchBar extends mixins(
           search: this.buildSearchParam(),
         },
       })
-      .then((result) => {
-        const {
-          data: {
-            nFTEntities: { nodes: nfts },
-          },
-        } = result
-        const metadataList: string[] = nfts.map(mapNFTorCollectionMetadata)
-        getCloudflareImageLinks(metadataList).then((imageLinks) => {
-          const nftResult: NFTWithMeta[] = []
-          processMetadata<NFTWithMeta>(metadataList, (meta, i) => {
-            nftResult.push({
-              ...nfts[i],
-              ...meta,
-              image:
-                (nfts[i]?.metadata &&
-                  imageLinks[fastExtract(nfts[i].metadata)]) ||
-                getSanitizer(meta.image || '')(meta.image || ''),
-              animation_url: getSanitizer(meta.animation_url || '')(
-                meta.animation_url || ''
-              ),
-            })
-          }).then(() => {
-            this.nftResult = nftResult
+
+      const {
+        data: { nFTEntities },
+      } = await nfts
+      const nftList = unwrapSafe(nFTEntities)
+      const metadataList: string[] = nftList.map(mapNFTorCollectionMetadata)
+      getCloudflareImageLinks(metadataList).then((imageLinks) => {
+        const nftResult: NFTWithMeta[] = []
+        processMetadata<NFTWithMeta>(metadataList, (meta, i) => {
+          nftResult.push({
+            ...nftList[i],
+            ...meta,
+            image:
+              (nftList[i]?.metadata &&
+                imageLinks[fastExtract(nftList[i].metadata)]) ||
+              getSanitizer(meta.image || '')(meta.image || ''),
+            animation_url: getSanitizer(meta.animation_url || '')(
+              meta.animation_url || ''
+            ),
           })
+        }).then(() => {
+          this.nftResult = nftResult
         })
       })
-      .catch((e) => {
-        this.$consola.warn(
-          '[PREFETCH] Unable fo fetch nft items',
-          this.offset,
-          e.message
-        )
-      })
+    } catch (e) {
+      logError(e, (msg) =>
+        this.$consola.warn('[PREFETCH] Unable fo fetch', msg)
+      )
+    }
+    try {
+      const query = await resolveQueryPath(
+        this.urlPrefix,
+        'collectionListWithSearch'
+      )
 
-    this.$apollo
-      .query({
-        query: collectionListWithSearch,
+      const collectionResult = this.$apollo.query({
+        query: query.default,
         client: this.urlPrefix,
         variables: {
           first: this.first,
           offset: this.offset,
           denyList,
-          orderBy: this.query.sortByMultiple,
+          orderBy: this.query.sortByMultiple?.length
+            ? this.query.sortByMultiple
+            : undefined,
           search: this.buildSearchParam(),
         },
       })
-      .then((result) => {
-        const {
-          data: {
-            collectionEntities: { nodes: collections },
-          },
-        } = result
-        const metadataList: string[] = collections.map(
-          mapNFTorCollectionMetadata
-        )
-        getCloudflareImageLinks(metadataList).then((imageLinks) => {
-          const collectionResult: CollectionWithMeta[] = []
-          processMetadata<CollectionWithMeta>(metadataList, (meta, i) => {
-            collectionResult.push({
-              ...collections[i],
-              ...meta,
-              image:
-                (collections[i]?.metadata &&
-                  imageLinks[fastExtract(collections[i].metadata)]) ||
-                getSanitizer(meta.image || '')(meta.image || ''),
-            })
-          }).then(() => {
-            this.collectionResult = collectionResult
+
+      const {
+        data: { collectionEntities },
+      } = await collectionResult
+      const collections = unwrapSafe(collectionEntities)
+      const metadataList: string[] = collections.map(mapNFTorCollectionMetadata)
+      getCloudflareImageLinks(metadataList).then((imageLinks) => {
+        const collectionResult: CollectionWithMeta[] = []
+        processMetadata<CollectionWithMeta>(metadataList, (meta, i) => {
+          collectionResult.push({
+            ...collections[i],
+            ...meta,
+            image:
+              (collections[i]?.metadata &&
+                imageLinks[fastExtract(collections[i].metadata)]) ||
+              getSanitizer(meta.image || '')(meta.image || ''),
           })
+        }).then(() => {
+          this.collectionResult = collectionResult
         })
       })
-      .catch((e) => {
-        this.$consola.warn(
-          '[PREFETCH] Unable fo fetch collection items',
-          this.offset,
-          e.message
-        )
-      })
+    } catch (e) {
+      logError(e, (msg) =>
+        this.$consola.warn('[PREFETCH] Unable fo fetch', this.offset, msg)
+      )
+    }
   }
 
   @Debounce(100)
-  replaceUrl(value: string | string[], value2?, key = 'search', key2?): void {
+  replaceUrl(queryCondition: { [key: string]: any }): void {
     this.$router
       .replace({
         path: String(this.$route.path),
@@ -676,8 +765,7 @@ export default class SearchBar extends mixins(
           page: '1',
           ...this.$route.query,
           search: this.searchQuery || undefined,
-          [key]: value,
-          [key2]: value2,
+          ...queryCondition,
         },
       })
       .catch(this.$consola.warn /*Navigation Duplicate err fix later */)
@@ -688,15 +776,23 @@ export default class SearchBar extends mixins(
     const params: any[] = []
 
     if (this.query.search) {
-      params.push({
-        name: { likeInsensitive: `%${this.query.search}%` },
-      })
+      if (this.urlPrefix === 'rmrk') {
+        params.push({
+          name: { likeInsensitive: this.query.search },
+        })
+      } else {
+        params.push({ name_containsInsensitive: this.query.search })
+      }
     }
 
     if (this.query.listed) {
-      params.push({
-        price: { greaterThan: '0' },
-      })
+      if (this.urlPrefix === 'rmrk') {
+        params.push({
+          price: { greaterThan: '0' },
+        })
+      } else {
+        params.push({ price_gt: '0' })
+      }
     }
 
     return params
@@ -724,38 +820,35 @@ export default class SearchBar extends mixins(
     })
   }
 
-  private oldSearchResult(value: string): boolean {
-    // whether this search exactly match the old search
-    const res = this.searched.filter((r) => r.name === value)
-    return !!res.length
-  }
-
   private removeSearchHistory(value: string): void {
     this.searched = this.searched.filter((r) => r.name !== value)
     localStorage.kodaDotSearchResult = JSON.stringify(this.searched)
   }
 
-  @Debounce(50)
-  private sliderChange([min, max]: [number, number]): void {
+  private sliderChange([min, max]: [
+    number | undefined,
+    number | undefined
+  ]): void {
     if (!this.sliderDirty) {
       this.sliderDirty = true
     }
-    this.sliderChangeMin(min * 1000000000000)
-    this.sliderChangeMax(max * 1000000000000)
-    const priceMin = String(min)
-    const priceMax = String(max)
-    this.replaceUrl(priceMin, priceMax, 'min', 'max')
+    this.sliderChangeMin(min ? min * 10 ** this.decimals : undefined)
+    this.sliderChangeMax(max ? max * 10 ** this.decimals : undefined)
+    const priceMin = min ? String(min) : undefined
+    const priceMax = max ? String(max) : undefined
+    this.query.listed = true
+    this.vListed = { listed: true, min: priceMin, max: priceMax }
   }
 
   @Emit('update:priceMin')
   @Debounce(50)
-  private sliderChangeMin(min: number): void {
+  private sliderChangeMin(min?: number): void {
     this.query.priceMin = min
   }
 
   @Emit('update:priceMax')
   @Debounce(50)
-  private sliderChangeMax(max: number): void {
+  private sliderChangeMax(max?: number): void {
     this.query.priceMax = max
   }
 }

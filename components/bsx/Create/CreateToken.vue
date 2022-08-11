@@ -2,25 +2,34 @@
   <div>
     <Loader v-model="isLoading" :status="status" />
     <BaseTokenForm
+      ref="baseTokenForm"
+      :showExplainerText="showExplainerText"
       v-bind.sync="base"
       :collections="collections"
       :hasEdition="false">
       <template v-slot:main>
         <BasicSwitch key="nsfw" v-model="nsfw" label="mint.nfsw" />
+        <BasicSwitch key="listed" v-model="listed" label="mint.listForSale" />
         <BalanceInput
+          ref="balanceInput"
+          required
+          hasToLargerThanZero
+          v-if="listed"
           label="Price"
           expanded
           key="price"
+          :step="0.01"
+          :min="0"
           @input="updatePrice"
           class="mb-3" />
-        <CustomAttributeInput
-          key="attributes"
-          v-show="base.selectedCollection"
-          :max="10"
-          v-model="attributes"
-          class="mb-3"
-          visible="collapse.collection.attributes.show"
-          hidden="collapse.collection.attributes.hide" />
+        <div v-show="base.selectedCollection" key="attributes">
+          <CustomAttributeInput
+            :max="10"
+            v-model="attributes"
+            class="mb-3"
+            visible="collapse.collection.attributes.show"
+            hidden="collapse.collection.attributes.hide" />
+        </div>
         <RoyaltyForm key="royalty" v-bind.sync="royalty" />
       </template>
       <template v-slot:footer>
@@ -41,12 +50,18 @@
             {{ $t('mint.deposit') }}: <Money :value="deposit" inline />
           </p>
         </b-field>
-        <SubmitButton
+        <b-field key="balance">
+          <AccountBalance />
+        </b-field>
+        <b-field
           key="submit"
-          label="mint.submit"
-          :disabled="disabled"
-          :loading="isLoading"
-          @click="submit" />
+          type="is-danger"
+          :message="balanceNotEnoughMessage">
+          <SubmitButton
+            label="mint.submit"
+            :loading="isLoading"
+            @click="submit()" />
+        </b-field>
       </template>
     </BaseTokenForm>
   </div>
@@ -60,32 +75,38 @@ import {
 } from '@/components/rmrk/Create/mintUtils'
 import ChainMixin from '@/utils/mixins/chainMixin'
 import { notificationTypes, showNotification } from '@/utils/notification'
-import { pinFileToIPFS, pinJson, PinningKey } from '@/utils/pinning'
+import { pinFileToIPFS, pinJson, PinningKey } from '@/utils/nftStorage'
 import shouldUpdate from '@/utils/shouldUpdate'
 import {
   Attribute,
   createMetadata,
   unSanitizeIpfsUrl,
 } from '@kodadot1/minimark'
-import Connector from '@kodadot1/sub-api'
-import { Component, mixins, Watch } from 'nuxt-property-decorator'
 
+import { ApiFactory, onApiConnect } from '@kodadot1/sub-api'
+import { Component, mixins, Prop, Ref, Watch } from 'nuxt-property-decorator'
 import { BaseMintedCollection, BaseTokenType } from '@/components/base/types'
 import {
   getInstanceDeposit,
   getMetadataDeposit,
 } from '@/components/unique/apiConstants'
 import { createTokenId } from '@/components/unique/utils'
-import onApiConnect from '@/utils/api/general'
-import { IPFS_KODADOT_IMAGE_PLACEHOLDER } from '@/utils/constants'
+import {
+  DETAIL_TIMEOUT,
+  IPFS_KODADOT_IMAGE_PLACEHOLDER,
+} from '@/utils/constants'
 import AuthMixin from '@/utils/mixins/authMixin'
 import MetaTransactionMixin from '@/utils/mixins/metaMixin'
 import PrefixMixin from '@/utils/mixins/prefixMixin'
 import resolveQueryPath from '@/utils/queryPathResolver'
 import { unwrapSafe } from '@/utils/uniquery'
 import { isRoyaltyValid, Royalty } from '@/utils/royalty'
-import { fetchCollectionMetadata } from '~/components/rmrk/utils'
+import {
+  fetchCollectionMetadata,
+  preheatFileFromIPFS,
+} from '~/components/rmrk/utils'
 import { getMany, update } from 'idb-keyval'
+import ApiUrlMixin from '~/utils/mixins/apiUrlMixin'
 
 type MintedCollection = BaseMintedCollection & {
   name?: string
@@ -104,6 +125,7 @@ const components = {
   RoyaltyForm: () => import('@/components/bsx/Create/RoyaltyForm.vue'),
   Money: () => import('@/components/shared/format/Money.vue'),
   SubmitButton: () => import('@/components/base/SubmitButton.vue'),
+  AccountBalance: () => import('@/components/shared/AccountBalance.vue'),
 }
 
 @Component({ components })
@@ -111,8 +133,11 @@ export default class CreateToken extends mixins(
   MetaTransactionMixin,
   ChainMixin,
   PrefixMixin,
-  AuthMixin
+  AuthMixin,
+  ApiUrlMixin
 ) {
+  @Prop({ type: Boolean, default: false }) showExplainerText!: boolean
+
   protected base: BaseTokenType<MintedCollection> = {
     name: '',
     file: null,
@@ -128,23 +153,35 @@ export default class CreateToken extends mixins(
   protected attributes: Attribute[] = []
   protected nsfw = false
   protected price: string | number = 0
+  protected listed = true
   protected royalty: Royalty = {
     amount: 0,
     address: '',
   }
+  protected balanceNotEnough = false
+  @Ref('balanceInput') readonly balanceInput
+  @Ref('baseTokenForm') readonly baseTokenForm
 
-  protected updatePrice(value: number) {
+  protected updatePrice(value: string) {
     this.price = value
+    this.balanceInput?.checkValidity()
   }
 
   get hasPrice() {
     return Number(this.price)
   }
 
+  get balanceNotEnoughMessage() {
+    if (this.balanceNotEnough) {
+      return this.$t('tooltip.notEnoughBalance')
+    }
+    return ''
+  }
+
   public async created() {
-    onApiConnect(() => {
-      const instanceDeposit = getInstanceDeposit()
-      const metadataDeposit = getMetadataDeposit()
+    onApiConnect(this.apiUrl, (api) => {
+      const instanceDeposit = getInstanceDeposit(api)
+      const metadataDeposit = getMetadataDeposit(api)
       this.deposit = (instanceDeposit + metadataDeposit).toString()
     })
   }
@@ -175,6 +212,7 @@ export default class CreateToken extends mixins(
       ...ce,
       alreadyMinted: ce.nfts?.length,
       lastIndexUsed: Number(ce.nfts?.at(0)?.index || 0),
+      totalCount: ce.nfts?.filter((nft) => !nft.burned).length,
     }))
 
     this.loadCollectionMeta()
@@ -206,10 +244,6 @@ export default class CreateToken extends mixins(
     })
   }
 
-  get disabled() {
-    return !(this.base.name && this.base.file && this.base.selectedCollection)
-  }
-
   get hasSupport(): boolean {
     return this.$store.state.preferences.hasSupport
   }
@@ -222,14 +256,33 @@ export default class CreateToken extends mixins(
     return this.$store.state.preferences.arweaveUpload
   }
 
-  protected async submit(): Promise<void> {
+  get validPriceValue(): boolean {
+    const price = parseInt(this.price as string)
+    return !this.listed || price > 0
+  }
+
+  public checkValidity() {
+    const balanceInputValid = this.balanceInput?.checkValidity()
+    const baseTokenFormValid = this.baseTokenForm?.checkValidity()
+    return balanceInputValid && baseTokenFormValid
+  }
+
+  protected async submit(retryCount = 0): Promise<void> {
     if (!this.base.selectedCollection) {
       throw ReferenceError('[MINT] Unable to mint without collection')
     }
-
+    // check fields // FIX: DOES NOT WORK
+    // if (!this.checkValidity()) {
+    //   return
+    // }
+    // check balance
+    if (!!this.deposit && parseFloat(this.balance) < parseFloat(this.deposit)) {
+      this.balanceNotEnough = true
+      return
+    }
     this.isLoading = true
     this.status = 'loader.ipfs'
-    const { api } = Connector.getInstance()
+    const api = await ApiFactory.useApiInstance(this.apiUrl)
     const { selectedCollection } = this.base
     const {
       alreadyMinted,
@@ -240,7 +293,7 @@ export default class CreateToken extends mixins(
     try {
       const metadata = await this.constructMeta()
       const cb = api.tx.utility.batchAll
-      const nextId = Math.max(lastIndexUsed + 1, alreadyMinted)
+      const nextId = Math.max(lastIndexUsed + 1, alreadyMinted + 1)
       const create = api.tx.nft.mint(collectionId, nextId, metadata)
       const list = this.price
         ? [api.tx.marketplace.setPrice(collectionId, nextId, this.price)]
@@ -272,8 +325,16 @@ export default class CreateToken extends mixins(
       })
     } catch (e) {
       if (e instanceof Error) {
-        showNotification(e.toString(), notificationTypes.danger)
         this.stopLoader()
+
+        if (retryCount < 3) {
+          // retry
+          showNotification('Retrying to complete minting process.')
+          this.submit(retryCount + 1)
+        } else {
+          // finally fail
+          showNotification(e.toString(), notificationTypes.danger)
+        }
       }
     }
   }
@@ -320,18 +381,22 @@ export default class CreateToken extends mixins(
       file.type
     )
 
+    preheatFileFromIPFS(fileHash)
+    // uploadDirect(file, this.accountId).catch(this.$consola.warn)
     const metaHash = await pinJson(meta, imageHash)
     return unSanitizeIpfsUrl(metaHash)
   }
 
   protected navigateToDetail(collection: string, id: string): void {
-    showNotification('You will go to the detail in 2 seconds')
+    showNotification(
+      `You will go to the detail in ${DETAIL_TIMEOUT / 1000} seconds`
+    )
     const go = () =>
       this.$router.push({
         path: `/${this.urlPrefix}/gallery/${createTokenId(collection, id)}`,
         query: { message: 'congrats' },
       })
-    setTimeout(go, 2000)
+    setTimeout(go, DETAIL_TIMEOUT)
   }
 }
 </script>

@@ -23,7 +23,7 @@
       <InfiniteLoading
         v-if="startPage > 1 && !isLoading && total > 0"
         direction="top"
-        @infinite="reachTopHandler"></InfiniteLoading>
+        @infinite="reachTopHandler" />
       <div
         :id="scrollContainerId"
         class="columns is-multiline"
@@ -32,33 +32,32 @@
           :class="`column is-4 column-padding ${scrollItemClassName} ${classLayout}`"
           v-for="collection in results"
           :key="collection.id">
-          <div class="card collection-card">
-            <nuxt-link
-              :to="`/${urlPrefix}/collection/${collection.id}`"
-              tag="div"
-              class="collection-card__skeleton">
-              <div class="card-image">
-                <BasicImage
-                  :src="collection.image"
-                  :alt="collection.name"
-                  customClass="collection__image-wrapper" />
-              </div>
+          <nuxt-link
+            :to="`/${urlPrefix}/collection/${collection.id}`"
+            tag="div"
+            class="card collection-card"
+            :data-cy="results.indexOf(collection)">
+            <div class="card-image">
+              <BasicImage
+                :src="collection.image"
+                :alt="collection.name"
+                customClass="collection__image-wrapper" />
+            </div>
 
-              <div class="card-content">
-                <nuxt-link :to="`/${urlPrefix}/collection/${collection.id}`">
-                  <CollectionDetail
-                    :nfts="collection.nfts"
-                    :name="collection.name" />
-                </nuxt-link>
-                <b-skeleton :active="isLoading"> </b-skeleton>
-              </div>
-            </nuxt-link>
-          </div>
+            <div class="card-content">
+              <nuxt-link :to="`/${urlPrefix}/collection/${collection.id}`">
+                <CollectionDetail
+                  :nfts="collection.nfts"
+                  :name="collection.name" />
+              </nuxt-link>
+              <b-skeleton :active="isLoading" />
+            </div>
+          </nuxt-link>
         </div>
       </div>
       <InfiniteLoading
         v-if="canLoadNextPage && !isLoading && total > 0"
-        @infinite="reachBottomHandler"></InfiniteLoading>
+        @infinite="reachBottomHandler" />
       <ScrollTopButton />
     </div>
   </div>
@@ -66,7 +65,6 @@
 
 <script lang="ts">
 import { Component, mixins, Vue, Watch } from 'nuxt-property-decorator'
-import shouldUpdate from '~/utils/shouldUpdate'
 import { Debounce } from 'vue-debounce-decorator'
 import {
   CollectionWithMeta,
@@ -121,16 +119,12 @@ export default class CollectionList extends mixins(
   private meta: Metadata[] = []
   private placeholder = '/placeholder.png'
   private isLoading = true
-  private searchQuery: SearchQuery = Object.assign(
-    {
-      search: '',
-      type: '',
-      sortBy: (this.$route.query.sort as string) ?? 'blockNumber_DESC',
-      listed: false,
-    },
-    this.$route.query
-  )
-
+  private searchQuery: SearchQuery = {
+    search: this.$route.query?.search?.toString() ?? '',
+    type: this.$route.query?.type?.toString() ?? '',
+    sortBy: this.$route.query?.sort?.toString() ?? 'blockNumber_DESC',
+    listed: this.$route.query?.listed?.toString() === 'true',
+  }
   private collectionSortOption: string[] = [
     'blockNumber_DESC',
     'blockNumber_ASC',
@@ -195,7 +189,7 @@ export default class CollectionList extends mixins(
 
     const result = await this.$apollo.query({
       query: collectionListWithSearch,
-      client: this.urlPrefix === 'rmrk' ? 'subsquid' : this.urlPrefix,
+      client: this.client,
       variables: {
         orderBy: this.searchQuery.sortBy,
         search: this.buildSearchParam(),
@@ -268,7 +262,7 @@ export default class CollectionList extends mixins(
 
   @Watch('$route.query.search')
   protected onSearchChange(val: string, oldVal: string) {
-    if (shouldUpdate(val, oldVal)) {
+    if (val !== oldVal) {
       this.resetPage()
       this.searchQuery.search = val || ''
     }
@@ -305,6 +299,10 @@ export default class CollectionList extends mixins(
     cursor: pointer;
   }
 
+  .collection-card {
+    cursor: pointer;
+  }
+
   .card-image img {
     border-radius: 0px;
     top: 50%;
@@ -324,19 +322,6 @@ export default class CollectionList extends mixins(
 
   .card-image__emotes__count {
     vertical-align: text-bottom;
-  }
-
-  .is-float-right {
-    float: right;
-  }
-
-  .is-absolute {
-    position: absolute;
-  }
-
-  .collection-collection-counter {
-    top: 5px;
-    right: -5px;
   }
 
   .columns {
