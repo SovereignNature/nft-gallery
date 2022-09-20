@@ -19,12 +19,12 @@
 <!-- Google tag (gtag.js) -->
 <script
   async
-  src="https://www.googletagmanager.com/gtag/js?id=G-NN94K876XV"></script>
+  src="https://www.googletagmanager.com/gtag/js?id=HN2LHHQD48"></script>
 <script>
 window.dataLayer = window.dataLayer || []
 function gtag() {
   dataLayer.push(arguments)
 }
 gtag('js', new Date())
-gtag('config', 'G-NN94K876XV')
+gtag('config', 'HN2LHHQD48')
 </script>
